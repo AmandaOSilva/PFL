@@ -1,20 +1,26 @@
- --Bignumber-
+--Bignumber-
 {-2.1-}
 import Data.Char(digitToInt)
 type Bignumber = [Int]
 
 
 {-2.2-}
+
 --scanner :: String -> Bignumber
---scanner str = [ digitToInt x  | x <- reverse(str), x != "-"] if  head(str) == "-" then  srt[0] = srt[0]* -1
+--scanner str = if  head(str) == "-" then update length str ( last srt  * -1 ) $ fromList [ digitToInt x  | x <- reverse(str), x /= "-"]  
+
+           
 
 
 
+
+           
 {-2.3-}
 output :: Bignumber ->  String
 output  xs =  concat(map (show) (reverse xs))
 
 
+          
 
 
 
@@ -52,24 +58,46 @@ recursivamente apos transformar  a acumulador em Bignumber .
 -}
 
 
-somaBN :: Bignumber -> Bignumber ->  Bignumber
-
-somaBN xs ys =  somaBN' 0 sameSizexs sameSizeys
-    where
-        (sameSizexs, sameSizeys) = machtSize xs ys
-       
-
-
-somaBN'::Int -> Bignumber -> Bignumber -> Bignumber
-somaBN' 0 x [] = x 
-somaBN' carry (x:xs) (y:ys) = (r `mod` 10) : (somaBN' (r `div` 10) xs ys)
-    where r = x + y + carry 
-somaBN' carry (x:[]) (y:[]) = [(r `mod` 10),(r `div` 10)]
-    where r = x + y + carry
-
-
 machtSize :: Bignumber -> Bignumber ->  (Bignumber, Bignumber)
 machtSize xs ys = (addZeros diff xs , addZeros (-diff) ys)
   where
     diff = length ys - length xs
     addZeros n ps = ps ++ replicate n 0
+
+
+subBN :: Bignumber -> Bignumber ->  Bignumber
+
+subBN xs ys =  subBN' 0 sameSizexs sameSizeys
+    where
+        (sameSizexs, sameSizeys) = machtSize xs ys
+       
+fCarry  carry r = 
+    if r <= 0 then  1
+    else 0
+
+subBN'::Int -> Bignumber -> Bignumber -> Bignumber
+subBN' 0 x [] = x 
+subBN' carry (x:[]) (y:[]) = [r]
+    where r = x - y - carry
+          carry = fCarry carry r 
+
+subBN' carry (x:xs) (y:ys) = (10*carry - r) : (subBN' (carry) xs ys)
+    where r = x - y - carry 
+          carry = fCarry carry r
+    
+                    
+
+
+somaBN::[Int]->[Int]->[Int]
+somaBN x y = somaBN' 0 x y
+
+somaBN':: Int->Bignumber->Bignumber-> Bignumber
+somaBN' 0 x []= x 
+somaBN' rest (x:[]) (y:[]) = final
+    where r = x+y+rest
+          final = 
+              if  (r `div` 10) /= 0 then [(r `mod` 10), (r `div` 10)]
+              else [(r `mod` 10)]
+somaBN' rest (x:xs) (y:ys) = (r `mod` 10 ) : (somaBN' (r `div` 10) xs ys)
+    where r = x+y+rest 
+
