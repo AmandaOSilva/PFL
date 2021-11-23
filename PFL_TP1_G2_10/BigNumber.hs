@@ -9,8 +9,12 @@ type Bignumber = [Int]
 --scanner :: String -> Bignumber
 --scanner str = if  head(str) == "-" then update length str ( last srt  * -1 ) $ fromList [ digitToInt x  | x <- reverse(str), x /= "-"]  
 
-           
-
+{-
+scanner :: String -> Bignumber
+scanner str = bn
+    where bn = if head(srt) == '-' then  (digitToInt head(str) * -1)::[ digitToInt x  | x <- reverse( tail (str))] else [ digitToInt x  | x <- reverse( tail str)]
+          
+-}
 
 
 
@@ -21,13 +25,59 @@ output  xs =  concat(map (show) (reverse xs))
 
 
           
+{-2.4-}
+somaBN:: Bignumber-> Bignumber-> Bignumber
+somaBN x y = somaBN' 0 x y
 
+somaBN':: Int->Bignumber->Bignumber-> Bignumber
+-- somaBN' 0 x []= x 
+
+somaBN' rest (x:[]) (y:[]) = final
+    where r = x+y+rest
+          final = 
+              if  (r `div` 10) /= 0 then [(r `mod` 10), (r `div` 10)]
+              else [(r `mod` 10)]
+somaBN' rest (x:xs) (y:ys) = (r `mod` 10 ) : (somaBN' (r `div` 10) xs ys)
+    where r = x+y+rest 
+
+{-2.5-}
+
+subBN :: Bignumber -> Bignumber ->  Bignumber
+
+subBN xs ys =  subBN' 0 sameSizexs sameSizeys
+    where
+        (sameSizexs, sameSizeys) = machtSize xs ys
+       
+
+
+subBN'::Int -> Bignumber -> Bignumber -> Bignumber
+subBN' carry (x:[]) (y:[]) = [10*carry - r]
+    where r = x - y - carry 
+          carry = if r <= 0 then 1 else 0
+
+subBN' carry (x:xs) (y:ys) = (10*carry - r) : (subBN' carry xs ys)
+    where r = x - y - carry 
+          carry  = if r <= 0 then 1 else 0
+    
+                    
+
+
+{-2.6-}
+
+{-2.7-}
 
 
 {-Aux-}
---func :: Bignumber -> Int
+func :: Bignumber -> Int
 bnToInt :: Bignumber -> Int
 bnToInt  bn = read (output bn ) :: Int
+
+
+machtSize :: Bignumber -> Bignumber ->  (Bignumber, Bignumber)
+machtSize xs ys = (addZeros diff xs , addZeros (-diff) ys)
+  where
+    diff = length ys - length xs
+    addZeros n ps = ps ++ replicate n 0
 
 {-2.4-}
 --somaBN :: Bignumber -> Bignumber -> Bignumber
@@ -56,48 +106,4 @@ bnToInt  bn = read (output bn ) :: Int
 {- Colocar resto mod em um acumulador, depois chamar somaBN 
 recursivamente apos transformar  a acumulador em Bignumber . 
 -}
-
-
-machtSize :: Bignumber -> Bignumber ->  (Bignumber, Bignumber)
-machtSize xs ys = (addZeros diff xs , addZeros (-diff) ys)
-  where
-    diff = length ys - length xs
-    addZeros n ps = ps ++ replicate n 0
-
-
-subBN :: Bignumber -> Bignumber ->  Bignumber
-
-subBN xs ys =  subBN' 0 sameSizexs sameSizeys
-    where
-        (sameSizexs, sameSizeys) = machtSize xs ys
-       
-fCarry  carry r = 
-    if r <= 0 then  1
-    else 0
-
-subBN'::Int -> Bignumber -> Bignumber -> Bignumber
-subBN' 0 x [] = x 
-subBN' carry (x:[]) (y:[]) = [r]
-    where r = x - y - carry
-          carry = fCarry carry r 
-
-subBN' carry (x:xs) (y:ys) = (10*carry - r) : (subBN' (carry) xs ys)
-    where r = x - y - carry 
-          carry = fCarry carry r
-    
-                    
-
-
-somaBN::[Int]->[Int]->[Int]
-somaBN x y = somaBN' 0 x y
-
-somaBN':: Int->Bignumber->Bignumber-> Bignumber
-somaBN' 0 x []= x 
-somaBN' rest (x:[]) (y:[]) = final
-    where r = x+y+rest
-          final = 
-              if  (r `div` 10) /= 0 then [(r `mod` 10), (r `div` 10)]
-              else [(r `mod` 10)]
-somaBN' rest (x:xs) (y:ys) = (r `mod` 10 ) : (somaBN' (r `div` 10) xs ys)
-    where r = x+y+rest 
 
