@@ -32,7 +32,8 @@ output  xs =  concat(map (show) (reverse xs))
 
 {-2.4-}
 somaBN:: Bignumber-> Bignumber-> Bignumber
-somaBN x y = somaBN' 0 x y
+somaBN x y = somaBN' 0  sameSizexs sameSizeys
+     where (sameSizexs, sameSizeys) = machtSize xs ys
 
 somaBN':: Int->Bignumber->Bignumber-> Bignumber
 -- somaBN' 0 x []= x
