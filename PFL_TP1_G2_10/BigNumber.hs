@@ -33,7 +33,7 @@ output  xs =  concat(map (show) (reverse xs))
 {-2.4-}
 somaBN:: Bignumber-> Bignumber-> Bignumber
 somaBN x y = somaBN' 0  sameSizexs sameSizeys
-     where (sameSizexs, sameSizeys) = machtSize xs ys
+     where (sameSizexs, sameSizeys) = machtSize x y
 
 somaBN':: Int->Bignumber->Bignumber-> Bignumber
 -- somaBN' 0 x []= x
@@ -49,21 +49,26 @@ somaBN' rest (x:xs) (y:ys) = (r `mod` 10 ) : (somaBN' (r `div` 10) xs ys)
 {-2.5-}
 
 subBN :: Bignumber -> Bignumber ->  Bignumber
+subBN xs ys =  subBNaux3 0 (subBNaux2 xs ys)
 
-subBN xs ys =  subBN' 0 sameSizexs sameSizeys
-    where
-        (sameSizexs, sameSizeys) = machtSize xs ys
+subBNaux2 :: Bignumber -> Bignumber -> Bignumber
+subBNaux2 xs ys = zipWith (-) xs ys
+
+subBNaux3 :: Int -> Bignumber -> Bignumber
+subBNaux3 carry (ls:[]) = [ls + carry]
+subBNaux3 carry (fs:bn)
+  | ((fs <= 0 && last bn <= 0) || (fs >= 0 && last bn >= 0)) =
+    if abs fs - carry < 0 then [10 - fs - carry] ++ subBNaux3 1 bn else [abs fs - carry] ++ subBNaux3 0 bn
+  | otherwise = [10 - fs - carry] ++ subBNaux3 1 bn
 
 
 
-subBN'::Int -> Bignumber -> Bignumber -> Bignumber
-subBN' carry (x:[]) (y:[]) = [10*carry - r]
-    where r = x - y - carry
-          carry = if r <= 0 then 1 else 0
+subBN':: Int -> Bignumber -> Bignumber -> Bignumber
+subBN' carry (x:[]) (y:[]) = [10 * c + (x - y - carry)]
+    where c = if (x - y - carry) <= 0 then 1 else 0
 
-subBN' carry (x:xs) (y:ys) = (10*carry - r) : (subBN' carry xs ys)
-    where r = x - y - carry
-          carry  = if r <= 0 then 1 else 0
+subBN' carry (x:xs) (y:ys) = (10 * c + (x - y - carry)) : (subBN' c xs ys)
+    where c = if (x - y - carry) <= 0 then 1 else 0
 
 
 
