@@ -1,4 +1,4 @@
---Bignumber-
+ --Bignumber-
 {-2.1-}
 import Data.Char(digitToInt)
 type Bignumber = [Int]
@@ -32,13 +32,13 @@ somaBN x y = somaBN' 0 x y
 somaBN':: Int->Bignumber->Bignumber-> Bignumber
 -- somaBN' 0 x []= x 
 
-somaBN' rest (x:[]) (y:[]) = final
-    where r = x+y+rest
+somaBN' carry (x:[]) (y:[]) = final
+    where r = x + y + carry
           final = 
               if  (r `div` 10) /= 0 then [(r `mod` 10), (r `div` 10)]
               else [(r `mod` 10)]
-somaBN' rest (x:xs) (y:ys) = (r `mod` 10 ) : (somaBN' (r `div` 10) xs ys)
-    where r = x+y+rest 
+somaBN' carry (x:xs) (y:ys) = (r `mod` 10 ) : (somaBN' (r `div` 10) xs ys)
+    where r = x + y + carry 
 
 {-2.5-}
 
@@ -63,12 +63,24 @@ subBN' carry (x:xs) (y:ys) = (10*carry - r) : (subBN' carry xs ys)
 
 
 {-2.6-}
+--mulBN ::Bignumber -> Bignumber ->  Bignumber
+mulBN xs ys =  mulBN' 0 xs ys
 
+
+
+--mulBN' :: Int -> Bignumber-> Bignumber-> Bignumber 
+mulBN' n (x:xs) ys =  somaBN((addZeros n l) (mulBN' (n + 1) xs ys))
+    where addZeros n ps = replicate n 0 ++ ps
+          l = map (x*)ys 
+
+mulBN' n (x:[]) ys = addZeros n l
+    where addZeros n ps = replicate n 0 ++ ps
+          l = map (x*)ys  
 {-2.7-}
 
 
 {-Aux-}
-func :: Bignumber -> Int
+
 bnToInt :: Bignumber -> Int
 bnToInt  bn = read (output bn ) :: Int
 
@@ -103,7 +115,19 @@ machtSize xs ys = (addZeros diff xs , addZeros (-diff) ys)
 --aux xs ys = zipWith(+) xs ys
 --somaBN xs ys = [mod num 10 |num <- aux xs ys] + sum[x if x >= 10 else 0 for x in zipWith(+) xs ys]
 
-{- Colocar resto mod em um acumulador, depois chamar somaBN 
+{- Colocar carryo mod em um acumulador, depois chamar somaBN 
 recursivamente apos transformar  a acumulador em Bignumber . 
 -}
 
+
+
+
+
+
+
+
+
+
+
+
+ 
