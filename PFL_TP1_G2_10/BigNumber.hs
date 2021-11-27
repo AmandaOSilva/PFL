@@ -1,4 +1,4 @@
---Bignumber-
+ --Bignumber-
 {-2.1-}
 import Data.Char(digitToInt)
 type Bignumber = [Int]
@@ -80,30 +80,37 @@ subBNaux3 carry (fs:bn)
 subBNAlt :: Bignumber -> Bignumber ->  Bignumber
 
 subBNAlt xs ys   
-      | maiorQue ys xs  =  toNeg (subBAux ys xs) 
-      | maiorQue xs ys= subBAux xs ys
-      | (xs == ys) = [0]
-      where negys = toNeg(ys)
-            posX = toPos x
-            posY = toPos y
+      | length(ys) > length (xs)  = trocarSinal(subBAux ys xs) 
+      | length(xs) >= length (xs) = subBAux xs ys
+      | (xs == ys) = [0] --- acho q  precisa :)
+            where negsy = toNeg(ys)
+                  negsx = toNeg(xs)
+     
      
       
 
 subBAux :: Bignumber -> Bignumber ->  Bignumber
 subBAux x y
-    | isPos x && isPos y =
+   | isPos x && isPos y =
           subBN' 0 sameSizexs sameSizeys
     | not (isPos x) && not (isPos y) =
-          toNeg (somaBN' 0 sameSizexs sameSizeys)
-    | not (isPos x) && isPos y = 
-          toNeg( somaBN' 0  sameSizexs sameSizeys)
-    | isPos x && not (isPos y) = somaBN' 0  sameSizexs sameSizeys 
+          toNeg (subBN' 0 sameSizexs sameSizeys)
+    | not (isPos x) && isPos y =
+          if maiorQue posX y then
+                toNeg(somaBN' 0  sameSizexs sameSizeys)
+          else
+                somaBN' 0 sameSizeys sameSizexs
+    | isPos x && not (isPos y) =
+          if maiorQue x posY then
+                somaBN' 0 sameSizexs sameSizeys
+          else
+                toNeg(somaBN' 0 sameSizexs sameSizeys)
     | otherwise = error "ERROR IN subBN -> isPos"
           where
                 (sameSizexs, sameSizeys) = machtSize posX posY
                 posX = toPos x
                 posY = toPos y
-     
+
 
 
 subBN':: Int -> Bignumber -> Bignumber -> Bignumber
@@ -171,6 +178,9 @@ toNeg bn = init bn ++ [abs (last bn) * (-1)]
 
 maiorQue :: Bignumber -> Bignumber -> Bool
 maiorQue xs ys = (length(xs) > length( ys)) || ( (length(xs) == length( ys)) &&  (last(xs) > last(ys)))
+
+trocarSinal:: Bignumber -> Bignumber
+trocarSinal bn = init bn ++ [(last bn) * (-1)]
 
 
 
