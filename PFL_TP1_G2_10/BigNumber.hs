@@ -61,15 +61,15 @@ somaBN' rest (x:xs) (y:ys) = (r `mod` 10 ) : (somaBN' (r `div` 10) xs ys)
 
 subBN :: Bignumber -> Bignumber ->  Bignumber
 
-subBN xs ys   
-      | length(ys) > length (xs)  = trocarSinal(subBAux ys xs) 
+subBN xs ys
+      | length(ys) > length (xs)  = trocarSinal(subBAux ys xs)
       | length(xs) >= length (xs) = subBAux xs ys
-      | (xs == ys) = [0] --- acho q  precisa :)
+      | (xs == ys) = [0] --- acho q  precisa :) -> acho que não :P
             where negsy = toNeg(ys)
                   negsx = toNeg(xs)
-     
-     
-      
+
+
+
 
 subBAux :: Bignumber -> Bignumber ->  Bignumber
 subBAux x y
@@ -132,12 +132,12 @@ mulBN xs ys =  mulBN' 0 xs ys
           mulBN' 0 xs ys
       | not (isPos x) || not (isPos y) =
           toNeg (somaBN' 0 toPos(xs) toPos (ys))
-         
-mulBN' :: Int -> Bignumber-> Bignumber-> Bignumber 
+
+mulBN' :: Int -> Bignumber-> Bignumber-> Bignumber
 mulBN' n (x:xs) ys =  somaBN((mul10^N(n  (map (x*)ys))  ) (mulBN' (n + 1) xs ys))
     where mul10^N n l = (replicate n 0) ++ l
-         
-mulBN' n (x:[]) ys = mul10^N(n map (x*)ys ) 
+
+mulBN' n (x:[]) ys = mul10^N(n map (x*)ys )
     where  mul10^N n l = (replicate n 0) ++  l
 -}
 
@@ -148,14 +148,15 @@ mulBN' n (x:[]) ys = mul10^N(n map (x*)ys )
 
 divBN :: Bignumber -> Bignumber -> (Bignumber,Bignumber)
 divBN xs ys = res
-      where res =  if maiorQue ys xs then  ([0], xs) else divBN' [0] xs xs ys 
-      
+      where res =  if maiorQue ys xs then  ([0], xs)
+                   else divBN' [0] xs xs ys
+
 
 divBN':: Bignumber -> Bignumber -> Bignumber -> Bignumber -> (Bignumber,Bignumber)
-divBN' q r xs ys  
+divBN' q r xs ys
      | maiorIgual r ys =  divBN' (somaBN q [1]) (subBN r ys ) xs ys
      | otherwise = (q, r)
-      
+
 
 {-Aux-}
 bnToInt :: Bignumber -> Int
@@ -180,10 +181,19 @@ toNeg :: Bignumber -> Bignumber
 toNeg bn = init bn ++ [abs (last bn) * (-1)]
 
 maiorQue :: Bignumber -> Bignumber -> Bool
-maiorQue xs ys = (length(xs) > length( ys)) || ( (length(xs) == length( ys)) &&  (last(xs) > last(ys)))
+maiorQue (x:[]) (y:[]) = x > y
+maiorQue xs ys
+  | length xs /= length ys = length(xs) > length(ys)
+  | last xs /= last ys = last xs > last ys
+  | otherwise = maiorQue (init xs) (init ys)
+
 
 maiorIgual ::Bignumber -> Bignumber -> Bool
-maiorIgual xs ys = (length(xs) >= length( ys)) || ( (length(xs) == length( ys)) &&  (last(xs) >= last(ys)))
+maiorIgual (x:[]) (y:[]) = x >= y
+maiorIgual xs ys
+  | length xs /= length ys = length(xs) >= length(ys)
+  | last xs /= last ys = last xs >= last ys
+  | otherwise = maiorIgual (init xs) (init ys)
 
 trocarSinal:: Bignumber -> Bignumber
 trocarSinal bn = init bn ++ [(last bn) * (-1)]
@@ -202,7 +212,3 @@ trocarSinal bn = init bn ++ [(last bn) * (-1)]
 {-2.5-}
 --subBN :: Bignumber -> Bignumber -> Bignumber
 --subBN xs ys =   scanner (show ( bnToInt(xs) * bnToInt( ys)))
-
-
-
-         
