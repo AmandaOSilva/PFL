@@ -47,8 +47,6 @@ somaBN x y
 
 
 somaBN':: Int->Bignumber->Bignumber-> Bignumber
--- somaBN' 0 x []= x
-
 somaBN' rest (x:[]) (y:[]) = final
     where r = x + y + rest
           final =
@@ -60,26 +58,10 @@ somaBN' rest (x:xs) (y:ys) = (r `mod` 10 ) : (somaBN' (r `div` 10) xs ys)
 
 
 {-2.5-}
+
 subBN :: Bignumber -> Bignumber ->  Bignumber
-subBN xs ys =  subBNaux3 0 (subBNaux2 sameSizexs sameSizeys)
-     where (sameSizexs, sameSizeys) = machtSize xs ys
 
-subBNaux2 :: Bignumber -> Bignumber -> Bignumber
-subBNaux2 xs ys = zipWith (-) xs ys
-
-subBNaux3 :: Int -> Bignumber -> Bignumber
-subBNaux3 carry (ls:[]) = [abs ls - carry]
-subBNaux3 carry (fs:bn)
-  | ((fs <= 0 && last bn <= 0) || (fs >= 0 && last bn >= 0)) =
-    if fs - carry < 0 then [10 + fs - carry] ++ subBNaux3 1 bn else [abs fs - carry] ++ subBNaux3 0 bn
-  | otherwise = [10 + fs - carry] ++ subBNaux3 1 bn
-
-
-
-
-subBNAlt :: Bignumber -> Bignumber ->  Bignumber
-
-subBNAlt xs ys   
+subBN xs ys   
       | length(ys) > length (xs)  = trocarSinal(subBAux ys xs) 
       | length(xs) >= length (xs) = subBAux xs ys
       | (xs == ys) = [0] --- acho q  precisa :)
@@ -126,6 +108,18 @@ subBN' carry (x:xs) (y:ys) = (10 * c + (x - y - carry)) : (subBN' c xs ys)
 
 
 
+subBNaux2 :: Bignumber -> Bignumber -> Bignumber
+subBNaux2 xs ys = zipWith (-) xs ys
+
+subBNaux3 :: Int -> Bignumber -> Bignumber
+subBNaux3 carry (ls:[]) = [abs ls - carry]
+subBNaux3 carry (fs:bn)
+  | ((fs <= 0 && last bn <= 0) || (fs >= 0 && last bn >= 0)) =
+    if fs - carry < 0 then [10 + fs - carry] ++ subBNaux3 1 bn else [abs fs - carry] ++ subBNaux3 0 bn
+  | otherwise = [10 + fs - carry] ++ subBNaux3 1 bn
+
+
+
 
 
 
@@ -139,20 +133,29 @@ mulBN xs ys =  mulBN' 0 xs ys
       | not (isPos x) || not (isPos y) =
           toNeg (somaBN' 0 toPos(xs) toPos (ys))
          
-
 mulBN' :: Int -> Bignumber-> Bignumber-> Bignumber 
 mulBN' n (x:xs) ys =  somaBN((mul10^N(n  (map (x*)ys))  ) (mulBN' (n + 1) xs ys))
     where mul10^N n l = (replicate n 0) ++ l
          
-
 mulBN' n (x:[]) ys = mul10^N(n map (x*)ys ) 
     where  mul10^N n l = (replicate n 0) ++  l
 -}
 
 
 
+
 {-2.7-}
 
+divBN :: Bignumber -> Bignumber -> (Bignumber,Bignumber)
+divBN xs ys = res
+      where res =  if maiorQue ys xs then  ([0], xs) else divBN' [0] xs xs ys 
+      
+
+divBN':: Bignumber -> Bignumber -> Bignumber -> Bignumber -> (Bignumber,Bignumber)
+divBN' q r xs ys  
+     | maiorIgual r ys =  divBN' (somaBN q [1]) (subBN r ys ) xs ys
+     | otherwise = (q, r)
+      
 
 {-Aux-}
 bnToInt :: Bignumber -> Int
@@ -179,9 +182,11 @@ toNeg bn = init bn ++ [abs (last bn) * (-1)]
 maiorQue :: Bignumber -> Bignumber -> Bool
 maiorQue xs ys = (length(xs) > length( ys)) || ( (length(xs) == length( ys)) &&  (last(xs) > last(ys)))
 
+maiorIgual ::Bignumber -> Bignumber -> Bool
+maiorIgual xs ys = (length(xs) >= length( ys)) || ( (length(xs) == length( ys)) &&  (last(xs) >= last(ys)))
+
 trocarSinal:: Bignumber -> Bignumber
 trocarSinal bn = init bn ++ [(last bn) * (-1)]
-
 
 
 
@@ -200,3 +205,4 @@ trocarSinal bn = init bn ++ [(last bn) * (-1)]
 
 
 
+         
