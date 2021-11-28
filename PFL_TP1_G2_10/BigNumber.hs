@@ -99,18 +99,6 @@ subBN' carry (x:xs) (y:ys) =
                 then 1
                 else 0
 
-subBNaux2 :: BigNumber -> BigNumber -> BigNumber
-subBNaux2 xs ys = zipWith (-) xs ys
-
-subBNaux3 :: Int -> BigNumber -> BigNumber
-subBNaux3 carry (ls:[]) = [abs ls - carry]
-subBNaux3 carry (fs:bn)
-    | (fs <= 0 && last bn <= 0) || (fs >= 0 && last bn >= 0) =
-        if fs - carry < 0
-            then [10 + fs - carry] ++ subBNaux3 1 bn
-            else [abs fs - carry] ++ subBNaux3 0 bn
-    | otherwise = [10 + fs - carry] ++ subBNaux3 1 bn
-
 
 --2.6
 mulBN :: BigNumber -> BigNumber -> BigNumber
@@ -232,3 +220,17 @@ dif xs ys
   | length xs /= length ys = True
   | last xs /= last ys = True
   | otherwise = maiorIgual (init xs) (init ys)
+
+
+--Alternative subBN algorithm
+subBNaux2 :: BigNumber -> BigNumber -> BigNumber
+subBNaux2 xs ys = zipWith (-) xs ys
+
+subBNaux3 :: Int -> BigNumber -> BigNumber
+subBNaux3 carry (ls:[]) = [abs ls - carry]
+subBNaux3 carry (fs:bn)
+    | (fs <= 0 && last bn <= 0) || (fs >= 0 && last bn >= 0) =
+        if fs - carry < 0
+            then [10 + fs - carry] ++ subBNaux3 1 bn
+            else [abs fs - carry] ++ subBNaux3 0 bn
+    | otherwise = [10 + fs - carry] ++ subBNaux3 1 bn
