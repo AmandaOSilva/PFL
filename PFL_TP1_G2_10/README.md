@@ -10,7 +10,7 @@
  
  **fibListaInfinita:**  Para a lista infinita tambem fazemos uma chamada recursiva aonde adicionamos com zipwith a lista e a suas Tail. Desse modo é feita a soma de index n com index (n + 1).
 
-```` 
+````ruby 
 *Main> fibRec 10
 55
 *Main>  fibLista 10
@@ -18,7 +18,7 @@
 *Main>  fibListaInfinita 10
 55
 ```` 
-```` 
+````ruby 
 *Main> fibRec 22
 17711
 *Main>  fibLista 22
@@ -48,7 +48,7 @@ Pegamos o dígito menos significativo do primeiro bignum, pegamos o dígito meno
 
 
 Testes SomaBN:
-```` 
+````ruby 
 output (somaBN[1,2,3] [3,2,1]) == "444"
 True
 
@@ -68,7 +68,7 @@ True
 **SubBN** - A funcao de subtracao  é muito semelhanta a de adicao. Utilizamos o metodo de colunas. Caso a equacao,  res = a - b - carry  fosse menor que zero carry teria valor um e adicionamos a lista o seguinte valor; 10 * carry + res.
 
 Testes SubBN:
-```` 
+````ruby
 output (subBN[1,2,3] [3,2,1]) == "198" 
 True
 
@@ -82,7 +82,16 @@ output (subBN[9,9,9] [9,9,9,-9]) == "10998"
 True
 ```` 
 ### MulBN
-
+````ruby
+*Main> mulBN [0,0,2] [0,5]
+[0,0,0,0,1]
+*Main> mulBN [0,0,-2] [0,5]
+[0,0,0,0,-1]
+*Main> mulBN [0,0,-2] [0,-5]
+[0,0,0,0,1]
+*Main> mulBN [0,0,2] [0,-5]
+[0,0,0,0,-1]
+````
 ### DivBN
  Para  divisao optamos utilizar o metododo  de Divisão por subtração repetida. Aonde O valor do Denominador é subtraido do Resto e  1 é adionado ao quociente até o Resto ser Menor/Igual ao Denomindor.
  Exemplo: 
@@ -99,6 +108,23 @@ True
  >  **Resultado:** Quociente = 7 Resto = 3 
 
 Testes DivBN:
+
+````ruby
+*Main> divBN [5] [1]
+([5],[])
+
+*Main> divBN [0,0,3] [5,1]
+([0,2],[0])
+
+*Main> divBN [4,1,3] [5,1]
+([0,2],[4,1])
+
+*Main> divBN [4,1,3] [5,-1]
+([0,-2],[4,1])
+
+*Main> divBN [4,1,-3] [5,-1]
+([0,2],[4,1])
+````
 
                 
 

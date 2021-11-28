@@ -165,7 +165,7 @@ divBN xs ys
     | not (isPos xs) && not (isPos ys) =
         if maiorQue posY posX
             then ([0], xs)
-            else (toNeg (fst divided), snd divided)
+            else (fst divided, toNeg(snd divided))
     | otherwise = error "ERROR IN divBN -> isPos"
         where
             posX = toPos xs
