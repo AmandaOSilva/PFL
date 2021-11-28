@@ -1,5 +1,5 @@
 --Fibonacci
-import Bignumber
+import BigNumber
 --1.1
 fibRec :: (Integral a) => a -> a
 fibRec 0 = 0
@@ -29,17 +29,17 @@ fiblist = 0 : 1 : zipWith (+) fiblist (tail fiblist)
 
 
 --3.1
-fibRecBN :: Int -> Bignumber
+fibRecBN :: Int -> BigNumber
 fibRecBN 0 = [0]
 fibRecBN 1 = [1]
 fibRecBN num = somaBN (fibRecBN (num - 1)) (fibRecBN (num - 2))
 
 
 --3.2
-fibListaBN :: Int -> Bignumber
+fibListaBN :: Int -> BigNumber
 fibListaBN n = (auxFibListaBN n []) !! fromIntegral n
 
-auxFibListaBN :: Int -> [Bignumber] -> [Bignumber]
+auxFibListaBN :: Int -> [BigNumber] -> [BigNumber]
 auxFibListaBN 0 _ = [[0]]
 auxFibListaBN 1 _ = [[0], [1]]
 auxFibListaBN n lisBN
@@ -49,8 +49,8 @@ auxFibListaBN n lisBN
 
 
 --3.3
-fibListaInfinitaBN :: Int -> Bignumber
+fibListaInfinitaBN :: Int -> BigNumber
 fibListaInfinitaBN n = fiblistBN !! n
 
-fiblistBN :: [Bignumber]
+fiblistBN :: [BigNumber]
 fiblistBN = [0] : [1] : zipWith (somaBN) fiblistBN (tail fiblistBN)

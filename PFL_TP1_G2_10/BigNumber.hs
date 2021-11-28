@@ -1,28 +1,28 @@
---Bignumber
-module Bignumber where
+--BigNumber
+module BigNumber where
 --2.1
 import Data.Char(digitToInt)
-type Bignumber = [Int]
+type BigNumber = [Int]
 
 
 --2.2
-scanner :: String -> Bignumber
+scanner :: String -> BigNumber
 scanner (fstchar:str)
     |fstchar == '-' =
         init (scannerAux str) ++ [digitToInt (head str) * (-1)]
     |otherwise = scannerAux (fstchar:str)
 
-scannerAux :: String -> Bignumber
+scannerAux :: String -> BigNumber
 scannerAux str = [digitToInt x | x <- reverse str]
 
 
 --2.3
-output :: Bignumber ->  String
+output :: BigNumber ->  String
 output xs = concat(map show (reverse xs))
 
 
 --2.4
-somaBN :: Bignumber -> Bignumber -> Bignumber
+somaBN :: BigNumber -> BigNumber -> BigNumber
 somaBN x y
     | isPos x && isPos y =
           somaBN' 0 sameSizexs sameSizeys
@@ -45,7 +45,7 @@ somaBN x y
                 posY = toPos y
 
 
-somaBN':: Int -> Bignumber -> Bignumber -> Bignumber
+somaBN':: Int -> BigNumber -> BigNumber -> BigNumber
 somaBN' rest (x:[]) (y:[]) =
     if  (r `div` 10) /= 0
         then [(r `mod` 10), (r `div` 10)]
@@ -58,13 +58,13 @@ somaBN' rest (x:xs) (y:ys) = (r `mod` 10 ) : (somaBN' (r `div` 10) xs ys)
 
 
 --2.5
-subBN :: Bignumber -> Bignumber -> Bignumber
+subBN :: BigNumber -> BigNumber -> BigNumber
 subBN xs ys
     | maiorQue xs ys = subBAux xs ys
     | maiorQue ys xs = trocarSinal(subBAux ys xs)
     | otherwise = [0]
 
-subBAux :: Bignumber -> Bignumber -> Bignumber
+subBAux :: BigNumber -> BigNumber -> BigNumber
 subBAux x y
     | isPos x && isPos y =
           subBN' 0 sameSizexs sameSizeys
@@ -84,7 +84,7 @@ subBAux x y
                 posX = toPos x
                 posY = toPos y
 
-subBN':: Int -> Bignumber -> Bignumber -> Bignumber
+subBN':: Int -> BigNumber -> BigNumber -> BigNumber
 subBN' carry (x:[]) (y:[])
     | last (final) == 0 = []
     | last (final) /= 0 = final
@@ -99,10 +99,10 @@ subBN' carry (x:xs) (y:ys) =
                 then 1
                 else 0
 
-subBNaux2 :: Bignumber -> Bignumber -> Bignumber
+subBNaux2 :: BigNumber -> BigNumber -> BigNumber
 subBNaux2 xs ys = zipWith (-) xs ys
 
-subBNaux3 :: Int -> Bignumber -> Bignumber
+subBNaux3 :: Int -> BigNumber -> BigNumber
 subBNaux3 carry (ls:[]) = [abs ls - carry]
 subBNaux3 carry (fs:bn)
     | (fs <= 0 && last bn <= 0) || (fs >= 0 && last bn >= 0) =
@@ -113,7 +113,7 @@ subBNaux3 carry (fs:bn)
 
 
 --2.6
-mulBN :: Bignumber -> Bignumber -> Bignumber
+mulBN :: BigNumber -> BigNumber -> BigNumber
 mulBN _ [0] = [0]
 mulBN [0] _ = [0]
 mulBN xs ys
@@ -122,7 +122,7 @@ mulBN xs ys
   | not (isPos xs) && isPos ys || isPos xs && not (isPos ys)
       = toNeg (mulBNaux3 (mulBNaux2 (toPos xs) (toPos ys)))
 
-mulBNaux1 :: Int -> Bignumber -> Int -> Bignumber
+mulBNaux1 :: Int -> BigNumber -> Int -> BigNumber
 mulBNaux1 0 [] _ = []
 mulBNaux1 carry [] _ =
     (carry `mod` 10) : (mulBNaux1 (carry `div` 10) [] 0)
@@ -131,11 +131,11 @@ mulBNaux1 carry (x:[]) y =
 mulBNaux1 carry (x:xs) y =
     ((x * y + carry) `mod` 10) : (mulBNaux1 ((x * y + carry) `div` 10) xs y)
 
-mulBNaux2 :: Bignumber -> Bignumber -> [Bignumber]
+mulBNaux2 :: BigNumber -> BigNumber -> [BigNumber]
 mulBNaux2 xs ys =
     [mulBNaux1 0 xs ((ys !! y) * (10 ^ y)) | y <- [0..(length ys - 1)]]
 
-mulBNaux3 :: [Bignumber] -> Bignumber
+mulBNaux3 :: [BigNumber] -> BigNumber
 mulBNaux3 [] = []
 mulBNaux3 lisBN
   | length lisBN == 1 = head lisBN
@@ -147,7 +147,7 @@ mulBNaux3 lisBN
 
 
 --2.7
-divBN :: Bignumber -> Bignumber -> (Bignumber,Bignumber)
+divBN :: BigNumber -> BigNumber -> (BigNumber,BigNumber)
 divBN _ [0] = error "division by zero"
 divBN xs ys
     | isPos xs && isPos ys =
@@ -173,29 +173,40 @@ divBN xs ys
             divided = (divBN posX posY)
 
 
-divBN':: Bignumber -> Bignumber -> Bignumber -> Bignumber -> (Bignumber,Bignumber)
+divBN':: BigNumber -> BigNumber -> BigNumber -> BigNumber -> (BigNumber,BigNumber)
 divBN' q r xs ys
      | maiorIgual r ys =  divBN' (somaBN q [1]) (subBN r ys ) xs ys
      | otherwise = (q, r)
 
 
+--5
+safeDivBN :: BigNumber -> BigNumber -> Maybe (BigNumber, BigNumber)
+safeDivBN numerBN denomBN
+    | dif denomBN [0] = Just (divBN numerBN denomBN)
+    | otherwise = Nothing
+
+
 --Aux functions
-machtSize :: Bignumber -> Bignumber -> (Bignumber, Bignumber)
+machtSize :: BigNumber -> BigNumber -> (BigNumber, BigNumber)
 machtSize xs ys = (addZeros diff xs , addZeros (-diff) ys)
     where
         diff = length ys - length xs
         addZeros n ps = ps ++ replicate n 0
 
-isPos :: Bignumber -> Bool
+
+isPos :: BigNumber -> Bool
 isPos bn = last bn > 0
 
-toPos :: Bignumber -> Bignumber
+
+toPos :: BigNumber -> BigNumber
 toPos bn = init bn ++ [abs (last bn)]
 
-toNeg :: Bignumber -> Bignumber
+
+toNeg :: BigNumber -> BigNumber
 toNeg bn = init bn ++ [abs (last bn) * (-1)]
 
-maiorQue :: Bignumber -> Bignumber -> Bool
+
+maiorQue :: BigNumber -> BigNumber -> Bool
 maiorQue (x:[]) (y:[]) = x > y
 maiorQue xs ys
   | length xs /= length ys = length(xs) > length(ys)
@@ -203,12 +214,21 @@ maiorQue xs ys
   | otherwise = maiorQue (init xs) (init ys)
 
 
-maiorIgual ::Bignumber -> Bignumber -> Bool
+maiorIgual ::BigNumber -> BigNumber -> Bool
 maiorIgual (x:[]) (y:[]) = x >= y
 maiorIgual xs ys
   | length xs /= length ys = length(xs) >= length(ys)
   | last xs /= last ys = last xs >= last ys
   | otherwise = maiorIgual (init xs) (init ys)
 
-trocarSinal:: Bignumber -> Bignumber
+
+trocarSinal:: BigNumber -> BigNumber
 trocarSinal bn = init bn ++ [(last bn) * (-1)]
+
+
+dif ::BigNumber -> BigNumber -> Bool
+dif (x:[]) (y:[]) = x /= y
+dif xs ys
+  | length xs /= length ys = True
+  | last xs /= last ys = True
+  | otherwise = maiorIgual (init xs) (init ys)
