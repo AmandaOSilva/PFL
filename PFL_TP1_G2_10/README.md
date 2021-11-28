@@ -158,6 +158,17 @@ Testes DivBN:
 ([0,2],[4,1])
 ````
 
+### SafeDivBN
 
+A implementação da `safeDivBN` foi algo simples, isto é, comparamos o denominador com 0, caso seja a função retorna *Nothing* caso contrário retorna *Just* da divBN com os números dados.
 
+**Testes safeDivBn**
 
+```ruby
+*Main> 248/3
+82.66666666666667
+*Main> safeDivBN (scanner "-248") (scanner "3")
+Just ([2,-8],[-2])
+*Main> safeDivBN (scanner "-248") (scanner "0")
+Nothing 
+```

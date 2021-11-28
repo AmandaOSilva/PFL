@@ -30,14 +30,14 @@ somaBN x y
           toNeg (subBN sameSizexs sameSizeys)
     | not (isPos x) && isPos y =
           if maiorQue posX y
-                then toNeg(subBN (subBNaux2 sameSizexs sameSizeys))
+                then toNeg(subBN sameSizexs sameSizeys)
           else
-                subBN (sameSizeys sameSizexs)
+                subBN sameSizeys sameSizexs
     | isPos x && not (isPos y) =
           if maiorQue x posY
-                then subBN (sameSizexs sameSizeys)
+                then subBN sameSizexs sameSizeys
           else
-                toNeg(subBN (sameSizeys sameSizexs))
+                toNeg(subBN sameSizeys sameSizexs)
     | otherwise = error "ERROR IN somaBN -> isPos"
           where
                 (sameSizexs, sameSizeys) = machtSize posX posY
