@@ -147,6 +147,7 @@ mulBN' n (x:[]) ys = mul10^N(n map (x*)ys )
 {-2.7-}
 
 divBN :: Bignumber -> Bignumber -> (Bignumber,Bignumber)
+divBN _ [0] = error "division by zero"
 divBN xs ys
     | isPos xs && isPos ys =
         if maiorQue ys xs
