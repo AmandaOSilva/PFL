@@ -147,9 +147,28 @@ mulBN' n (x:[]) ys = mul10^N(n map (x*)ys )
 {-2.7-}
 
 divBN :: Bignumber -> Bignumber -> (Bignumber,Bignumber)
-divBN xs ys = res
-      where res =  if maiorQue ys xs then  ([0], xs)
-                   else divBN' [0] xs xs ys
+divBN xs ys
+    | isPos xs && isPos ys =
+        if maiorQue ys xs
+            then ([0], xs)
+            else divBN' [0] xs xs ys
+    | not(isPos xs) && isPos ys =
+        if maiorQue ys posX
+            then ([0], xs)
+            else (toNeg (fst divided), toNeg (snd divided)) --Talvez seja melhor usar um where aqui
+    | isPos xs && not (isPos ys) =
+        if maiorQue posY xs
+            then ([0], xs)
+            else (toNeg (fst divided), snd divided) --Talvez seja melhor usar um where aqui
+    | not (isPos xs) && not (isPos ys) =
+        if maiorQue posY posX
+            then ([0], xs)
+            else (toNeg (fst divided), snd divided) --Talvez seja melhor usar um where aqui
+    | otherwise = error "ERROR IN divBN -> isPos"
+        where
+            posX = toPos xs
+            posY = toPos ys
+            divided = (divBN posX posY)
 
 
 divBN':: Bignumber -> Bignumber -> Bignumber -> Bignumber -> (Bignumber,Bignumber)
