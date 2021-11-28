@@ -22,10 +22,10 @@ auxFibLista n fiblis
 
 --1.3
 fibListaInfinita :: Int -> Int
-fibListaInfinita n = fiblist !! n
+fibListaInfinita n = fiblistinf !! n
 
-fiblist :: (Integral a) => [a]
-fiblist = 0 : 1 : zipWith (+) fiblist (tail fiblist)
+fiblistinf :: (Integral a) => [a]
+fiblistinf = 0 : 1 : zipWith (+) fiblistinf (tail fiblistinf)
 
 
 --3.1

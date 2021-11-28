@@ -158,6 +158,47 @@ Testes DivBN:
 ([0,2],[4,1])
 ````
 
+### Eficiência das funções Fib
+
+Para os testes seguintes deixamos as funções correr durante um máximo de 10 segundos.
+
+**FibRec e FibRecBN**:
+
+O maior valor que a função *fibRec* conseguiu retornar em 10s ``5702887``. Para a função *fibRecBN* foi o valor ``[9,6,2,6,4,3,1]``, isto é ``1346269`` em decimal.
+
+Assim consegue-se perceber que apesar do type *BigNumber* puder trabalhar com números maiores não é sempre mais eficiente.
+
+```ruby
+*Main> fibRec 34
+5702887
+*Main> fibRec 31
+1346269
+```
+
+**fibLista e fibListaBN**:
+
+O maior valor que a função *fibLista* conseguiu retornar em 10s foi  ``832040``. Para a função *fibListaBN* foi o valor ``[0,4,0,2,3,8]``, isto é ``832040`` em decimal.
+
+Neste caso a implementação com *BigNumber* foi tão rápida como a com uso apenas de interios. Detalhe importante, apesar de trabalhar com listas a função `fibLista` foi mais lenta que a `fibRec`.
+
+```ruby
+*Main> fibLista 30
+832040
+*Main> fibListaBN 30
+[0,4,0,2,3,8]
+```
+
+**fibListaInfinita e fibListaInfinitaBN**:
+
+O maior valor que a função *fibListaInfinita* conseguiu retornar em 10s foi  ``2178309``. Para a função *fibListaInfinitaBN* aconteceu algo inesperado, a implementação é equivalente que a função que não usa *BigNumber* mas os resultados foram completamente diferentes! Em menos de 10s conseguimos obter o elemento na posição 10 000 da sequência de fibonacci! Não à maneira prática de confirmar este resultado da forma que se encontra, então utilizamos a função `output` para converter para *String* e confirmamos através de uma pesquisa na internet que de facto o valor estava correto!
+
+```ruby
+*Main> fibListaInfinita 32
+2178309
+```
+
+![fibListaInfinitaBN 10 000](fibListaInfinitaBN_10000.png)
+
 ### SafeDivBN
 
 A implementação da `safeDivBN` foi algo simples, isto é, comparamos o denominador com 0, caso seja a função retorna *Nothing* caso contrário retorna *Just* da divBN com os números dados.
