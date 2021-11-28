@@ -1,4 +1,5 @@
 --Bignumber
+module Bignumber where
 --2.1
 import Data.Char(digitToInt)
 type Bignumber = [Int]
