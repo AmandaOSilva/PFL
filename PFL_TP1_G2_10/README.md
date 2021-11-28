@@ -59,7 +59,7 @@ Primeiro, observamos que uma função que soma dois inteiros pode ser expressa p
 
 Desse modo chegamos ao seguintes algoritmos para as funçoes: 
 
-**SomaBN** - Para fazer a adicao  o melhor metodo é o de adicao de colunas ( metodo aprendido no primario) 
+**SomaBN** - Para fazer a adição o melhor metodo é o de adicao de colunas ( metodo aprendido no primario) 
 Pegamos o dígito menos significativo do primeiro bignum, pegamos o dígito menos significativo do segundo bignum, somamos com o carry, se a adicao for maior que 10 o carry da chamda recursiva tera o valor 1 (resultado/10, se  resultado menor do dez o carry tera valor zero se nao será um). A funcao é chamada recursivamente até chegar ao ultimo digito da lista.  
 
 
@@ -82,7 +82,7 @@ True
 ```` 
 
 
-**SubBN** - A funcao de subtracao  é muito semelhanta a de adicao. Utilizamos o metodo de colunas. Caso a equacao,  res = a - b - carry  fosse menor que zero carry teria valor um e adicionamos a lista o seguinte valor; 10 * carry + res.
+**SubBN** - A função de subtração é muito semelhanta a de adicao. Utilizamos o metodo de colunas. Caso a equacao,  res = a - b - carry  fosse menor que zero carry teria valor um e adicionamos a lista o seguinte valor; 10 * carry + res.
 
 Testes SubBN:
 ````ruby
@@ -125,7 +125,7 @@ De seguida, tendo a garantia de que os números estão positivos separamos o pro
 "83394"
 ````
 ### DivBN
- Para  divisao optamos utilizar o metododo  de Divisão por subtração repetida. Aonde O valor do Denominador é subtraido do Resto e  1 é adionado ao quociente até o Resto ser Menor/Igual ao Denomindor.
+ Para  divisão optamos utilizar o metododo  de Divisão por subtração repetida. Aonde O valor do Denominador é subtraido do Resto e  1 é adicionado ao quociente até o Resto ser Menor/Igual ao Denomindor.
  Exemplo: 
  > 38 dividido por 5:
  >  * **1.** 38 - 5 = 33
@@ -166,7 +166,7 @@ Para os testes seguintes deixamos as funções correr durante um máximo de 10 s
 
 O maior valor que a função *fibRec* conseguiu retornar em 10s ``5702887``. Para a função *fibRecBN* foi o valor ``[9,6,2,6,4,3,1]``, isto é ``1346269`` em decimal.
 
-Assim consegue-se perceber que apesar do type *BigNumber* puder trabalhar com números maiores não é sempre mais eficiente.
+Assim consegue-se perceber que  a implementacao dos operadores  do nosso type *BigNumber* não  sempre mais eficiente.
 
 ```ruby
 *Main> fibRec 34
@@ -198,7 +198,6 @@ O maior valor que a função *fibListaInfinita* conseguiu retornar em 10s foi  `
 ```
 
 ![fibListaInfinitaBN 10 000](fibListaInfinitaBN_10000.png)
-
 ### SafeDivBN
 
 A implementação da `safeDivBN` foi algo simples, isto é, comparamos o denominador com 0, caso seja a função retorna *Nothing* caso contrário retorna *Just* da divBN com os números dados.
