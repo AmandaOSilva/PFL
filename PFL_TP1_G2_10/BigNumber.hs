@@ -120,7 +120,52 @@ subBNaux3 carry (fs:bn)
 
 
 
+mulBN :: Bignumber -> Bignumber -> Bignumber
+mulBN _ [0] = [0]
+mulBN [0] _ = [0]
+mulBN xs ys
+  | isPos xs && isPos ys || not (isPos xs) && not (isPos ys)
+      = mulBNaux3 (mulBNaux2 (toPos xs) (toPos ys))
+  | not (isPos xs) && isPos ys || isPos xs && not (isPos ys)
+      = toNeg (mulBNaux3 (mulBNaux2 (toPos xs) (toPos ys)))
 
+--mulBN xs ys = mulBNaux 0 xs ys
+--[((xs !! i) * (ys !! j)) * (10 ^ (i + j)) |
+--     i <- [0..((length xs) - 1)],
+--     j <- [0..((length ys) - 1)]]
+--
+-- mulBNaux :: Int -> Bignumber -> Bignumber -> Bignumber
+-- mulBNaux 0 [] [] = []
+-- mulBNaux carry [] [] =
+--     (carry `mod` 10) : (mulBNaux (carry `div` 10) [] [])
+-- mulBNaux carry (x:[]) (y:[]) =
+--     ((x * y + carry) `mod` 10) : (mulBNaux ((x * y + carry) `div` 10) [] [])
+-- mulBNaux carry (x:[]) (y:ys) =
+--     ((x * y + carry) `mod` 10) : (mulBNaux ((x * y + carry) `div` 10) [] (y:ys))
+-- mulBNaux carry (x:xs) (y:ys) =
+--     ((x * y + carry) `mod` 10) : (mulBNaux ((x * y + carry) `div` 10) xs (y:ys))
+
+mulBNaux1 :: Int -> Bignumber -> Int -> Bignumber
+mulBNaux1 0 [] _ = []
+mulBNaux1 carry [] y =
+    (carry `mod` 10) : (mulBNaux1 (carry `div` 10) [] y)
+mulBNaux1 carry (x:[]) y =
+    ((x * y + carry) `mod` 10) : (mulBNaux1 ((x * y + carry) `div` 10) [] y)
+mulBNaux1 carry (x:xs) y =
+    ((x * y + carry) `mod` 10) : (mulBNaux1 ((x * y + carry) `div` 10) xs y)
+
+mulBNaux2 :: Bignumber -> Bignumber -> [Bignumber]
+mulBNaux2 xs ys = [mulBNaux1 0 xs ((ys !! y) * (10 ^ y)) | y <- [0..(length ys - 1)]]
+
+mulBNaux3 :: [Bignumber] -> Bignumber
+mulBNaux3 [] = []
+mulBNaux3 lisBN
+  | length lisBN == 1 = head lisBN
+  | length lisBN == 2 =
+      somaBN (lisBN !! 0) (lisBN !! 1)
+  | length lisBN > 2 =
+      mulBNaux3 ((somaBN (lisBN !! 0) (lisBN !! 1)) : tail (tail lisBN))
+  | otherwise = error "something wrong in mulBNaux3"
 
 
 
