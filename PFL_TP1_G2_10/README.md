@@ -9,7 +9,8 @@
  **fibLista:**
  
  **fibListaInfinita:**  Para a lista infinita tambem fazemos uma chamada recursiva aonde adicionamos com zipwith a lista e a suas Tail. Desse modo é feita a soma de index n com index (n + 1).
-
+ 
+ * Testes Fib:
 ````ruby 
 *Main> fibRec 10
 55
@@ -25,6 +26,15 @@
 17711
 *Main>  fibListaInfinita 22
 17711
+```` 
+* Testes fibBN:
+````ruby 
+*Main> fibRecBN 22
+ [1,1,7,7,1]
+*Main>  fibListaBN 22
+ [1,1,7,7,1]
+*Main>  fibListaInfinitaBN 22
+ [1,1,7,7,1]
 ```` 
 ## BigNumbers
 

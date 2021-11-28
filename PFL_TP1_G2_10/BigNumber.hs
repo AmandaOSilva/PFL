@@ -27,17 +27,17 @@ somaBN x y
     | isPos x && isPos y =
           somaBN' 0 sameSizexs sameSizeys
     | not (isPos x) && not (isPos y) =
-          toNeg (subBN' 0 sameSizexs sameSizeys)
+          toNeg (subBN sameSizexs sameSizeys)
     | not (isPos x) && isPos y =
           if maiorQue posX y
-                then toNeg(subBNaux3 0 (subBNaux2 sameSizexs sameSizeys))
+                then toNeg(subBN (subBNaux2 sameSizexs sameSizeys))
           else
-                subBNaux3 0 (subBNaux2 sameSizeys sameSizexs)
+                subBN (sameSizeys sameSizexs)
     | isPos x && not (isPos y) =
           if maiorQue x posY
-                then subBNaux3 0 (subBNaux2 sameSizexs sameSizeys)
+                then subBN (sameSizexs sameSizeys)
           else
-                toNeg(subBNaux3 0 (subBNaux2 sameSizeys sameSizexs))
+                toNeg(subBN (sameSizeys sameSizexs))
     | otherwise = error "ERROR IN somaBN -> isPos"
           where
                 (sameSizexs, sameSizeys) = machtSize posX posY
