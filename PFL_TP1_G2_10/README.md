@@ -9,8 +9,9 @@
  
  **fibLista**: A função `fibLista` usa uma estratégia similiar à função de fibonacci recursiva mas guarda os resultados parciais da sequência de fibonacci e usa-os para calcular o elemento seguinte até ao elemento pedido.
  
- **fibListaInfinita**: Para a lista infinita tambem fazemos uma chamada recursiva aonde adicionamos com zipwith a lista e a suas Tail. Desse modo é feita a soma de index n com index (n + 1).
-
+ **fibListaInfinita:**  Para a lista infinita tambem fazemos uma chamada recursiva aonde adicionamos com zipwith a lista e a suas Tail. Desse modo é feita a soma de index n com index (n + 1).
+ 
+ * Testes Fib:
 ````ruby 
 *Main> fibRec 10
 55
@@ -26,6 +27,15 @@
 17711
 *Main>  fibListaInfinita 22
 17711
+```` 
+* Testes fibBN:
+````ruby 
+*Main> fibRecBN 22
+ [1,1,7,7,1]
+*Main>  fibListaBN 22
+ [1,1,7,7,1]
+*Main>  fibListaInfinitaBN 22
+ [1,1,7,7,1]
 ```` 
 ## BigNumbers
 
