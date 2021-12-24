@@ -37,7 +37,8 @@ move(GameState, Move, NewGameState) :-
     nth0(1, GameState, Turn), Turn = 2, 
         nth0(0, GameState, GameBoard),
         nth0(2, GameState, Score),
-        NewGameState = [GameBoard, 1, Score].
+        doMove(GameBoard, Move, Turn, NewGameBoard),
+        NewGameState = [NewGameBoard, 1, Score].
 
 
 doMove(GameBoard, Move, Turn, NewGameBoard) :-
