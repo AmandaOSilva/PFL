@@ -4,18 +4,24 @@
     The GameState should have a game board (standard is 7x7),
     it should also save the turn
     and the scores of each player
+
+    Moves start with 0
 */
 
 maplistlist(_,[]).
 maplistlist(P, [H|T]) :- maplist(P,H), maplistlist(P, T).
 
-length1(A, B) :- length(B, A).
+lenght_(A, B) :- length(B, A).
 
 isEqual(A, B) :- A = B.
 
+replace(Index, OgList, ReplaceTo, NewList) :-
+  nth0(Index, OgList, _, Helper),
+  nth0(Index, NewList, ReplaceTo, Helper).
+
 initial_state(Size, GameState) :-
     length(GameBoard, Size),
-    maplist(length1(Size), GameBoard),
+    maplist(lenght_(Size), GameBoard),
     maplistlist(isEqual('X'), GameBoard),
     Turn = 1,
     Score = [0, 0],
@@ -37,10 +43,18 @@ move(GameState, Move, NewGameState) :-
 doMove(GameBoard, Move, Turn, NewGameBoard) :-
     nth0(0, Move, MoveX),
     nth0(1, Move, MoveY),
-    nth1(MoveX, GameBoard, Line),
-    replace(MoveY, Line, '1', NewGameBoard).    
+    nth0(MoveX, GameBoard, Line),
+    nth0(MoveY, Line, SqSymb),
+    SqSymb = 'X',
+    NewSymbCode is (48 + Turn),
+    char_code(NewSymb, NewSymbCode),
+    replace(MoveY, Line, NewSymb, NewLine),
+    replace(MoveX, GameBoard, NewLine, NewGameBoard).  
 
-    
-replace(I, L, E, K) :-
-  nth0(I, L, _, R),
-  nth0(I, K, E, R).
+
+/*
+    Used for testing:
+    initial_state(3, S).
+    S = [[['X','X','X'],['X','X','X'],['X','X','X']],1,[0,0]]
+    move([[['X','X','X'],['X','X','X'],['X','X','X']],1,[0,0]], [1, 1], NewS).
+*/
