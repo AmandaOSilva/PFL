@@ -100,4 +100,6 @@ do_move(GameBoard, Move, Turn, NewGameBoard) :-
     initial_state(3, S).
     S = [[['X','X','X'],['X','X','X'],['X','X','X']],1,[0,0]]
     move([[['X','X','X'],['X','X','X'],['X','X','X']],1,[0,0]], [1, 1], NewS).
+    
+    move([[['1','2','X'],['X','1','X'],['X','X','X']],2,[0,0]], [2, 1], NewS).
 */
