@@ -118,12 +118,6 @@ do_move(GameBoard, Move, Turn, NewGameBoard) :-
     replace(MoveX, GameBoard, NewLine, NewGameBoard).  
 
 
-read_value(Y):-
-	repeat,	
-    between(1, 10, X),
-	print(X),print(' '),
-	X = Y.
-
 /*
     Used for testing:
     initial_state(3, S).
