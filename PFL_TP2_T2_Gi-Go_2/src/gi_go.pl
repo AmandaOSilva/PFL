@@ -41,46 +41,68 @@ move(GameState, Move, NewGameState) :-
         NewGameState = [NewGameBoard, 1, Score].
 */
 move([GameBoard, Turn, Score], Move, NewGameState) :-
-    Turn = 1,
     doMove(GameBoard, Move, Turn, NewGameBoard),
-    calc_score(NewGameBoard, Move, 1, Score, NewScore),
-    NewGameState = [NewGameBoard, 2, NewScore];
+    calc_score(NewGameBoard, Move, Turn, Score, NewScore),
+    NewTurn is (Turn mod 2) + 1,    
+    NewGameState = [NewGameBoard, NewTurn, NewScore].
 
-    Turn = 2, 
-    doMove(GameBoard, Move, Turn, NewGameBoard),
-    calc_score(NewGameBoard, Move, 2, Score, NewScore),
-    NewGameState = [NewGameBoard, 1, NewScore].
+calc_score(GameBoard, Move, Turn, Score, NewScore) :-
+    calc_score_row(GameBoard, Move, Turn, Score, PartialNewScore1),
+    calc_score_column(GameBoard, Move, Turn, PartialNewScore1, PartialNewScore2),
+    calc_score_diagonal_right(GameBoard, Move, Turn, PartialNewScore2, PartialNewScore3),
+    calc_score_diagonal_left(GameBoard, Move, Turn, PartialNewScore3, NewScore).
 
-calc_score(GameBoard, [MoveX,MoveY], Turn, [Score1, Score2], NewScore) :-        
+calc_score_row(GameBoard, [MoveX, _], Turn, Score, NewScore) :-
+    print('Rol'),
     /* se completar uma linha */
     nth0(MoveX, GameBoard, Row), 
     \+ member('X', Row), 
     length(Row, L),
-    add_score(L, Turn, [Score1, Score2], NewScore );
+    print('Row: ' + Row),
+    add_score(L, Turn, Score, NewScore);
 
-    /* se completar uma coluna */
+    /* se nao completar nada*/
+    NewScore = Score.
+
+calc_score_column(GameBoard, [_, MoveY], Turn, Score, NewScore) :-
+    print('Col. Y=' + MoveY),
     length(GameBoard, L),
     repeat,
-    between(0, L, I),
-    nth0(I, GameBoard, Row),
-    nth0(MoveY, Row, Square),
-    Square \= 'X',
-    add_score(L, Turn, [Score1, Score2], NewScore );
+        between(0, L, I), 
+        print('Col: i= ' + I),
+        nth0(I, GameBoard, Row),
+        nth0(MoveY, Row, Square),
+        (
+            Square = 'X',
+            print('Col: row= ' + Row),
+            NewScore = Score;
 
+            I =:= L-1,
+            /* se completar uma coluna */
+            add_score(3, Turn, Score, NewScore)         
+        ).
+
+calc_score_diagonal_right(GameBoard, [MoveX,MoveY], Turn, [Score1, Score2], NewScore) :-
     /* se completar uma diagonal direita */
 
+    /* se nao completar nada*/
+    NewScore = [Score1, Score2].
+
+
+calc_score_diagonal_left(GameBoard, [MoveX,MoveY], Turn, [Score1, Score2], NewScore) :-
     /* se completar uma diagonal esquerda */
 
     /* se nao completar nada*/
     NewScore = [Score1, Score2].
 
+
 add_score(Points, Turn, [Score1, Score2], NewScore ) :-
     Turn=1, 
-    NewScore1 is Score1+Points,
+    NewScore1 is Score1 + Points,
     NewScore = [NewScore1, Score2];
 
     Turn=2,
-    NewScore2 is Score2+Points,
+    NewScore2 is Score2 + Points,
     NewScore = [Score1, NewScore2].
 
 
@@ -95,11 +117,16 @@ do_move(GameBoard, Move, Turn, NewGameBoard) :-
     replace(MoveY, Line, NewSymb, NewLine),
     replace(MoveX, GameBoard, NewLine, NewGameBoard).  
 
+
+read_value(Y):-
+	repeat,	
+    between(1, 10, X),
+	print(X),print(' '),
+	X = Y.
+
 /*
     Used for testing:
     initial_state(3, S).
     S = [[['X','X','X'],['X','X','X'],['X','X','X']],1,[0,0]]
     move([[['X','X','X'],['X','X','X'],['X','X','X']],1,[0,0]], [1, 1], NewS).
-    
-    move([[['1','2','X'],['X','1','X'],['X','X','X']],2,[0,0]], [2, 1], NewS).
 */
