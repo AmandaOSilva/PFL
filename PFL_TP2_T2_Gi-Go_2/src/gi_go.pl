@@ -1,6 +1,9 @@
 :- use_module(library(lists)).
 :- use_module(library(between)).
+:- use_module(library(aggregate)).
+
 /*
+
     The GameState should have a game board (standard is 7x7),
     it should also save the turn
     and the scores of each player
@@ -145,6 +148,18 @@ is_valid_move(GameBoard, [MoveX,MoveY]) :-
     nth0(MoveX, GameBoard, Row),
     nth0(MoveY, Row, Square),
     Square = 'X'.
+
+valid_moves(GameState, ListOfMoves) :-
+    findall(ValidMove, valid_move(GameState, ValidMove), ListOfMoves).
+
+valid_move([GameBoard,_,_], ValidMove) :-
+    length(GameBoard, L),
+    foreach(between(0, L, X), 
+        foreach(between(0, L, Y), (
+            is_valid_move(GameBoard, [X, Y]), 
+            ValidMove = [X, Y];
+            true
+            ))).
 
 /*
     Used for testing:
