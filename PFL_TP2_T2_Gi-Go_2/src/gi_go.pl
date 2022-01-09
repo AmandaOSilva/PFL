@@ -2,6 +2,7 @@
 :- use_module(library(between)).
 :- use_module(library(aggregate)).
 
+
 /*
 
     The GameState should have a game board (standard is 7x7),
@@ -150,7 +151,7 @@ is_valid_move(GameBoard, [MoveX,MoveY]) :-
     Square = 'X'.
 
 valid_moves(GameState, ListOfMoves) :-
-    findall(ValidMove, valid_move(GameState, ValidMove), ListOfMoves).
+    setof(ValidMove, valid_move(GameState, ValidMove), [_|ListOfMoves]).
 
 valid_move([GameBoard,_,_], ValidMove) :-
     length(GameBoard, L),
