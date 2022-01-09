@@ -35,6 +35,7 @@ initial_state(Size, GameState) :-
     GameState = [GameBoard, Turn, Score].
 
 move([GameBoard, Turn, Score], Move, NewGameState) :-
+    is_valid_move(GameBoard, Move),
     do_move(GameBoard, Move, Turn, NewGameBoard),
     calc_score(NewGameBoard, Move, Turn, Score, NewScore),
     NewTurn is (Turn mod 2) + 1,    
@@ -140,6 +141,11 @@ do_move(GameBoard, [MoveX,MoveY], Turn, NewGameBoard) :-
     replace(MoveY, Line, NewSymb, NewLine),
     replace(MoveX, GameBoard, NewLine, NewGameBoard).  
 
+is_valid_move(GameBoard, [MoveX,MoveY]) :-
+    nth0(MoveX, GameBoard, Row),
+    nth0(MoveY, Row, Square),
+    Square = 'X'.
+
 /*
     Used for testing:
     initial_state(3, S).
@@ -165,6 +171,12 @@ test(initial_state) :-
         ['X','X','X','X','X','X','X'],
         ['X','X','X','X','X','X','X'],
         ['X','X','X','X','X','X','X']], 1, [0,0]]).
+
+test(is_valid_move_sucess) :- 
+    is_valid_move([['X','X','X'],['X','X','X'],['X','X','X']], [0,0]).
+
+test(is_valid_move_fail, fail) :- 
+    is_valid_move([['1','X','X'],['X','X','X'],['X','X','X']], [0,0]).
 
 test(move_no_score) :- 
     move(
