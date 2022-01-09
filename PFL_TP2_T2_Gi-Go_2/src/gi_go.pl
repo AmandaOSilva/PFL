@@ -41,7 +41,7 @@ move(GameState, Move, NewGameState) :-
         NewGameState = [NewGameBoard, 1, Score].
 */
 move([GameBoard, Turn, Score], Move, NewGameState) :-
-    doMove(GameBoard, Move, Turn, NewGameBoard),
+    do_move(GameBoard, Move, Turn, NewGameBoard),
     calc_score(NewGameBoard, Move, Turn, Score, NewScore),
     NewTurn is (Turn mod 2) + 1,    
     NewGameState = [NewGameBoard, NewTurn, NewScore].
@@ -79,7 +79,7 @@ calc_score_column(GameBoard, [_, MoveY], Turn, Score, NewScore) :-
 
             I =:= L-1,
             /* se completar uma coluna */
-            add_score(3, Turn, Score, NewScore)         
+            add_score(L, Turn, Score, NewScore)         
         ).
 
 calc_score_diagonal_right(GameBoard, [MoveX,MoveY], Turn, [Score1, Score2], NewScore) :-
@@ -106,9 +106,7 @@ add_score(Points, Turn, [Score1, Score2], NewScore ) :-
     NewScore = [Score1, NewScore2].
 
 
-do_move(GameBoard, Move, Turn, NewGameBoard) :-
-    nth0(0, Move, MoveX),
-    nth0(1, Move, MoveY),
+do_move(GameBoard, [MoveX,MoveY], Turn, NewGameBoard) :-
     nth0(MoveX, GameBoard, Line),
     nth0(MoveY, Line, SqSymb),
     SqSymb = 'X',
@@ -116,7 +114,6 @@ do_move(GameBoard, Move, Turn, NewGameBoard) :-
     char_code(NewSymb, NewSymbCode),
     replace(MoveY, Line, NewSymb, NewLine),
     replace(MoveX, GameBoard, NewLine, NewGameBoard).  
-
 
 /*
     Used for testing:
