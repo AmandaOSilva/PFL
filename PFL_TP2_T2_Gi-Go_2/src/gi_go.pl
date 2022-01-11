@@ -120,7 +120,7 @@ calc_score_diagonal(GameBoard, [MoveX,MoveY], Turn, Score, NewScore) :-
                 NewScore = Score;
 
                 I =:= DiagMax-1,
-                /* se completar uma coluna */
+                /* se completar uma diagonal */
                 add_score(DiagMax, Turn, Score, NewScore)         
             )
     ).
@@ -150,17 +150,20 @@ is_valid_move(GameBoard, [MoveX,MoveY]) :-
     nth0(MoveY, Row, Square),
     Square = 'X'.
 
+/* valid_moves(+GameState, -ListOfMoves) */
 valid_moves(GameState, ListOfMoves) :-
-    setof(ValidMove, valid_move(GameState, ValidMove), [_|ListOfMoves]).
+    findall(ValidMove, valid_move(GameState, ValidMove), ListOfMoves).
 
+
+/* valid_move(+GameState, -ValidMove) */
 valid_move([GameBoard,_,_], ValidMove) :-
     length(GameBoard, L),
-    foreach(between(0, L, X), 
-        foreach(between(0, L, Y), (
-            is_valid_move(GameBoard, [X, Y]), 
-            ValidMove = [X, Y];
-            true
-            ))).
+    L1 is L - 1,
+    between(0, L1, X),
+    between(0, L1, Y),
+    is_valid_move(GameBoard, [X, Y]),
+    ValidMove = [X, Y].
+
 
 /*
     Used for testing:
@@ -170,6 +173,7 @@ valid_move([GameBoard,_,_], ValidMove) :-
 */
 
 :- use_module(library(plunit)).
+
 :- begin_tests(test).
      
 test(mirror_gameboard) :-
@@ -206,5 +210,13 @@ test(move_row_score) :-
 test(move_col_score) :- 
     move([[['2','X','1'],['X','X','1'],['X','X','X']], 2, [0,0]], [2, 2], 
          [[['2','X','1'],['X','X','1'],['X','X','2']], 1, [0,3]]), !.
+
+test(valid_moves) :-
+    valid_moves([[['1','X','X'],['X','X','X'],['X','X','2']],1,[0,0]], 
+        [[0,1],[0,2],[1,0],[1,1],[1,2],[2,0],[2,1]]).
+
+test(valid_moves_empty) :-
+    valid_moves([[['1','2','1'],['1','2','2'],['2','1','2']],1,[0,0]], 
+        []).
 
 :- end_tests(test).
