@@ -180,14 +180,19 @@ display_game(GameState):-
     nth0(2, GameState, Score),
     write('Turn = '),
     write(Turn),
-    write('\n'),
     writeScores(Score),
-    writeBoard(GameBoard),
+    write('\nCurrent Game Board:\n\n'),
+    nth0(0, GameBoard, Row),
+    write('L\\C '),
+    writeBoardInfoCol(Row, 0),
+    write('\n'),
+    writeBoard(GameBoard, 0),
     write('\n').
 
 writeScores(Score):-
     nth0(0, Score, P1Score),
     nth0(1, Score, P2Score), 
+    write('\n'),
     write('Player 1 score: '),
     write(P1Score),
     write('\n'),
@@ -196,16 +201,22 @@ writeScores(Score):-
     write('\n').
 
 
-writeBoard([]):-!.
-writeBoard(GameBoard):-
-    nth0(0, GameBoard, Row, GameBoardLeftOver),
+writeBoard([], Index):-!.
+writeBoard([Row|[]], Index):-
+    write('\n '),
+    write(Index),
+    write('  '),
     writeBoardRow(Row),
-    write('\n'),
-    /*
-    write('---|---|---|----'),
-    write('\n'),
-    */
-    writeBoard(GameBoardLeftOver).
+    write('\n').
+writeBoard([Row|RestBoard], Index):-
+    write('\n '),
+    write(Index),
+    write('  '),
+    writeBoardRow(Row),
+    write('\n    '),
+    writeRowSeparator(Row),
+    Next is Index + 1,
+    writeBoard(RestBoard, Next).
 
 writeBoardRow([]):- !.
 writeBoardRow([H|[]]):-
@@ -217,6 +228,24 @@ writeBoardRow([H|T]):-
     write(' |'),
     writeBoardRow(T).
 
+writeRowSeparator([]):- !.
+writeRowSeparator([H|[]]):- 
+    write('---').
+writeRowSeparator([H|T]):- 
+    write('---|'),
+    writeRowSeparator(T).
+
+writeBoardInfoCol([], Num):- !.
+writeBoardInfoCol([H|[]], Num):- 
+    write(' '),
+    write(Num),
+    write(' ').
+writeBoardInfoCol([H|T], Num):-
+    write(' '),
+    write(Num),
+    write('  '),
+    Next is Num + 1,
+    writeBoardInfoCol(T, Next).
 
 /*
     Used for testing:
