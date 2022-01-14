@@ -25,6 +25,12 @@ mirror_gameboard([X|Xs], Mirror) :-
     rev(X, RevX),
     mirror_gameboard(Xs, MirrorXs), !,
     Mirror = [RevX|MirrorXs].
+
+    
+mirror_move(Move, Size, MirrorMove):-
+    nth0(1, Move, OldY),
+    NewY is Size - OldY - 1,
+    replace(1, Move, NewY, MirrorMove).
     
 replace(Index, OgList, ReplaceTo, NewList) :-
   nth0(Index, OgList, _, Helper),
@@ -50,7 +56,10 @@ calc_score(GameBoard, Move, Turn, Score, NewScore) :-
     calc_score_column(GameBoard, Move, Turn, PartialNewScore1, PartialNewScore2),
     calc_score_diagonal(GameBoard, Move, Turn, PartialNewScore2, PartialNewScore3),
     mirror_gameboard(GameBoard, MirrorGameBoard),
-    calc_score_diagonal(MirrorGameBoard, Move, Turn, PartialNewScore3, NewScore).
+    length(GameBoard, Size),
+    mirror_move(Move, Size, MirrorMove),
+    calc_score_diagonal(MirrorGameBoard, MirrorMove, Turn, PartialNewScore3, NewScore),
+    !.
 
 calc_score_row(GameBoard, [MoveX, _], Turn, Score, NewScore) :-
     %print('Rol'),
@@ -86,7 +95,7 @@ calc_score_diagonal(GameBoard, [MoveX,MoveY], Turn, Score, NewScore) :-
     /* se completar uma diagonal direita */
     length(GameBoard, L),
     Diff is MoveY-MoveX,
-    DiagMax is L + abs(Diff),
+    DiagMax is L - abs(Diff),
     ( 
         Diff >= 0,
         repeat,
@@ -264,3 +273,13 @@ test(valid_moves_empty) :-
         []).
 
 :- end_tests(test).
+
+% move([[['2','X','X'],['1','1','X'],['X','X','X']], 2, [0,0]], [2, 2], [[['2','X','X'],['1','2','X'],['X','X','2']], 1, [0,3]]).
+/*
+    initial_state(7, State), 
+    display_game(State), 
+    move(State, [5, 0], NewState),
+    display_game(NewState), 
+    move(NewState, [6, 1], NewState2), 
+    display_game(NewState2).
+*/
