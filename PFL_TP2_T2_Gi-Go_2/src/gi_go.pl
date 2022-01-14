@@ -53,23 +53,23 @@ calc_score(GameBoard, Move, Turn, Score, NewScore) :-
     calc_score_diagonal(MirrorGameBoard, Move, Turn, PartialNewScore3, NewScore).
 
 calc_score_row(GameBoard, [MoveX, _], Turn, Score, NewScore) :-
-    print('Rol'),
+    %print('Rol'),
     /* se completar uma linha */
     nth0(MoveX, GameBoard, Row), 
     \+ member('X', Row), 
     length(Row, L),
-    print('Row: ' + Row),
+    %print('Row: ' + Row),
     add_score(L, Turn, Score, NewScore);
 
     /* se nao completar nada*/
     NewScore = Score.
 
 calc_score_column(GameBoard, [_, MoveY], Turn, Score, NewScore) :-
-    print('Col. Y=' + MoveY),
+    %print('Col. Y=' + MoveY),
     length(GameBoard, L),
     repeat,
         between(0, L, I), 
-        print('Col: i= ' + I),
+        %print('Col: i= ' + I),
         nth0(I, GameBoard, Row),
         nth0(MoveY, Row, Square),
         (
@@ -94,10 +94,10 @@ calc_score_diagonal(GameBoard, [MoveX,MoveY], Turn, Score, NewScore) :-
             nth0(I, GameBoard, Row),
             ColNumber is I + Diff,
             nth0(ColNumber, Row, Square),
-            print(' Diag R: I='+ I + ' colNumber= ' + ColNumber + ' Row' + Row+'\n'),
+            %print(' Diag R: I='+ I + ' colNumber= ' + ColNumber + ' Row' + Row+'\n'),
             (
                 Square = 'X',
-                print('Col: row= ' + Row),
+                %print('Col: row= ' + Row),
                 /* ha um quadrado em branco*/
                 NewScore = Score;
 
@@ -112,10 +112,10 @@ calc_score_diagonal(GameBoard, [MoveX,MoveY], Turn, Score, NewScore) :-
             RowNumber is I - Diff,
             nth0(RowNumber, GameBoard, Row),
             nth0(I, Row, Square),
-            print(' Diag R2: I='+ I + ' rowNumber= '+ RowNumber+' Row='+Row),
+            %print(' Diag R2: I='+ I + ' rowNumber= '+ RowNumber+' Row='+Row),
             (
                 Square = 'X',
-                print('Col: row= ' + Row),
+                %print('Col: row= ' + Row),
                 /* ha um quadrado em branco*/
                 NewScore = Score;
 
@@ -163,6 +163,50 @@ valid_move([GameBoard,_,_], ValidMove) :-
     between(0, L1, Y),
     is_valid_move(GameBoard, [X, Y]),
     ValidMove = [X, Y].
+
+display_game(GameState):-
+    write('\n'),
+    nth0(0, GameState, GameBoard),
+    nth0(1, GameState, Turn), 
+    nth0(2, GameState, Score),
+    write('Turn = '),
+    write(Turn),
+    write('\n'),
+    writeScores(Score),
+    writeBoard(GameBoard),
+    write('\n').
+
+writeScores(Score):-
+    nth0(0, Score, P1Score),
+    nth0(1, Score, P2Score), 
+    write('Player 1 score: '),
+    write(P1Score),
+    write('\n'),
+    write('Player 2 score: '),
+    write(P2Score),
+    write('\n').
+
+
+writeBoard([]):-!.
+writeBoard(GameBoard):-
+    nth0(0, GameBoard, Row, GameBoardLeftOver),
+    writeBoardRow(Row),
+    write('\n'),
+    /*
+    write('---|---|---|----'),
+    write('\n'),
+    */
+    writeBoard(GameBoardLeftOver).
+
+writeBoardRow([]):- !.
+writeBoardRow([H|[]]):-
+    write(' '),
+    write(H).
+writeBoardRow([H|T]):-
+    write(' '),
+    write(H),
+    write(' |'),
+    writeBoardRow(T).
 
 
 /*
