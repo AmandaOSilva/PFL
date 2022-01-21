@@ -12,6 +12,10 @@
     Moves start with 0
 */
 
+maximum_at(List,Max,Pos) :-
+   maplist(#>=(Max), List),
+   nth0(Pos, List, Max).
+
 maplistlist(_,[]).
 maplistlist(P, [H|T]) :- maplist(P,H), maplistlist(P, T).
 
@@ -253,6 +257,33 @@ writeBoardInfoCol([H|T], Num):-
     S = [[['X','X','X'],['X','X','X'],['X','X','X']],1,[0,0]]
     move([[['X','X','X'],['X','X','X'],['X','X','X']],1,[0,0]], [1, 1], NewS).
 */
+
+play_game:-
+    initial_state(7, GameState),
+    display_game(GameState),
+    game_cycle(GameState).
+
+game_cycle(GameState):-
+    game_over(GameState, Winner), !,
+    write('winner is: '),
+    write(Winner).
+game_cycle(GameState):-
+    nth0(1, GameState, Turn),
+    Player is Turn,
+    choose_move(GameState, Player, Move),
+    move(GameState, Move, NewGameState),
+    %next_player(Player, NextPlayer),
+    display_game(NewGameState), !,
+    game_cycle(NewGameState).
+
+
+game_over(GameState, Winner):-
+    valid_moves(GameState, ListOfMoves),
+    length(ListOfMoves, 0),
+    nth0(2, GameState, Scores),
+    maximum_at(Scores, Winner).
+
+
 
 :- use_module(library(plunit)).
 
