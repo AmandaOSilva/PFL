@@ -257,7 +257,9 @@ writeBoardInfoCol([H|T], Num):-
 */
 
 play_game:-
-    initial_state(3, GameState),
+    write('Hello! Wellcome to Gi-Go.\n'),
+    %Menu(BoardSize),
+    initial_state(BoardSize, GameState),
     display_game(GameState),
     game_cycle(GameState).
 
@@ -299,8 +301,45 @@ choose_move([GameBoard, Turn, Scores], Player, Move):-
     ),
     write('End choose_move\n\n').
 */
+/*
+Menu(BoardSize):-
+    choose_boardSize(BoardSize),
+    choose_GameMode(GameMode),
+    handle_GameMode(GameMode).
 
 
+handle_GameMode(GameMode):-
+    GameMode == 2, 
+        assert(machine(2)),
+        choose_machineLevel(Level),
+        assert(machine_level(Level)).
+
+
+
+choose_GameMode(GameMode):-
+    repeat,
+    write('How would you like to play?\n
+        1. Human vs Human\n
+        2. Human vs Machine\n
+        3. Machine vs Human\n
+        4. Machine vs Machine\n'),
+    read(GameMode),
+    valid_GameMode(GameMode), !.
+
+valid_GameMode(GameMode):-
+    GameMode > 0,
+    GameMode < 5 .
+
+choose_boardSize(BoardSize):-
+    repeat,
+    write('Choose your prefered Board Size: '),
+    read(BoardSize),
+    valid_boardSize(BoardSize), !.
+
+valid_boardSize(BoardSize):-
+    BoardSize > 3,
+    BoardSize < 10 .
+*/
 
 :- use_module(library(plunit)).
 
