@@ -12,9 +12,7 @@
     Moves start with 0
 */
 
-maximum_at(List,Max,Pos) :-
-   maplist(#>=(Max), List),
-   nth0(Pos, List, Max).
+maximum_at(L, M, I) :- nth1(I, L, M), \+ (member(E, L), E > M).
 
 maplistlist(_,[]).
 maplistlist(P, [H|T]) :- maplist(P,H), maplistlist(P, T).
@@ -187,7 +185,7 @@ display_game(GameState):-
     writeScores(Score),
     write('\nCurrent Game Board:\n\n'),
     nth0(0, GameBoard, Row),
-    write('L\\C '),
+    write('R\\C '),
     writeBoardInfoCol(Row, 0),
     write('\n'),
     writeBoard(GameBoard, 0),
@@ -259,14 +257,15 @@ writeBoardInfoCol([H|T], Num):-
 */
 
 play_game:-
-    initial_state(7, GameState),
+    initial_state(3, GameState),
     display_game(GameState),
     game_cycle(GameState).
 
 game_cycle(GameState):-
     game_over(GameState, Winner), !,
-    write('winner is: '),
-    write(Winner).
+    write('winner is player '),
+    write(Winner),
+    write('!!!').
 game_cycle(GameState):-
     nth0(1, GameState, Turn),
     Player is Turn,
@@ -281,7 +280,25 @@ game_over(GameState, Winner):-
     valid_moves(GameState, ListOfMoves),
     length(ListOfMoves, 0),
     nth0(2, GameState, Scores),
-    maximum_at(Scores, Winner).
+    maximum_at(Scores, Max, Winner).
+
+
+
+choose_move([GameBoard, Turn, Scores], Player, Move):-
+    repeat,
+    format('Player ~d choose your move row: ', [Turn]),
+    read(MoveX),
+    format('Player ~d choose your move col: ', [Turn]),
+    read(MoveY),
+    Move = [MoveX, MoveY],
+    is_valid_move(GameBoard, Move), !.
+        /*
+    ( is_valid_move(GameBoard, [MoveX, MoveY]) ->
+    ;
+        choose_move([GameBoard, Turn, Scores], Player, Move).
+    ),
+    write('End choose_move\n\n').
+*/
 
 
 
