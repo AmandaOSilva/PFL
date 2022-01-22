@@ -203,7 +203,7 @@ writeScores(Score):-
     write('\n').
 
 
-writeBoard([], Index):-!.
+writeBoard([], _):-!.
 writeBoard([Row|[]], Index):-
     write('\n '),
     write(Index),
@@ -231,18 +231,18 @@ writeBoardRow([H|T]):-
     writeBoardRow(T).
 
 writeRowSeparator([]):- !.
-writeRowSeparator([H|[]]):- 
+writeRowSeparator([_|[]]):- 
     write('---').
-writeRowSeparator([H|T]):- 
+writeRowSeparator([_|T]):- 
     write('---|'),
     writeRowSeparator(T).
 
-writeBoardInfoCol([], Num):- !.
-writeBoardInfoCol([H|[]], Num):- 
+writeBoardInfoCol([], _):- !.
+writeBoardInfoCol([_|[]], Num):- 
     write(' '),
     write(Num),
     write(' ').
-writeBoardInfoCol([H|T], Num):-
+writeBoardInfoCol([_|T], Num):-
     write(' '),
     write(Num),
     write('  '),
@@ -257,21 +257,17 @@ writeBoardInfoCol([H|T], Num):-
 */
 
 play_game:-
-    write('Hello! Wellcome to Gi-Go.\n'),
-    %Menu(BoardSize),
+    write('\nHello! Wellcome to Gi-Go.\n\n'),
+    menu(BoardSize),
     initial_state(BoardSize, GameState),
     display_game(GameState),
     game_cycle(GameState).
 
 game_cycle(GameState):-
     game_over(GameState, Winner), !,
-    write('winner is player '),
-    write(Winner),
-    write('!!!').
+    format('winner is player ~w!!!', [Winner]).
 game_cycle(GameState):-
-    nth0(1, GameState, Turn),
-    Player is Turn,
-    choose_move(GameState, Player, Move),
+    choose_move(GameState, Move),
     move(GameState, Move, NewGameState),
     %next_player(Player, NextPlayer),
     display_game(NewGameState), !,
@@ -282,11 +278,11 @@ game_over(GameState, Winner):-
     valid_moves(GameState, ListOfMoves),
     length(ListOfMoves, 0),
     nth0(2, GameState, Scores),
-    maximum_at(Scores, Max, Winner).
+    maximum_at(Scores, _, Winner).
 
 
 
-choose_move([GameBoard, Turn, Scores], Player, Move):-
+choose_move([GameBoard, Turn, _], Move):-
     repeat,
     format('Player ~d choose your move row: ', [Turn]),
     read(MoveX),
@@ -294,35 +290,53 @@ choose_move([GameBoard, Turn, Scores], Player, Move):-
     read(MoveY),
     Move = [MoveX, MoveY],
     is_valid_move(GameBoard, Move), !.
-        /*
-    ( is_valid_move(GameBoard, [MoveX, MoveY]) ->
-    ;
-        choose_move([GameBoard, Turn, Scores], Player, Move).
-    ),
-    write('End choose_move\n\n').
-*/
-/*
-Menu(BoardSize):-
+
+menu(BoardSize):-
     choose_boardSize(BoardSize),
     choose_GameMode(GameMode),
     handle_GameMode(GameMode).
 
 
-handle_GameMode(GameMode):-
-    GameMode == 2, 
-        assert(machine(2)),
-        choose_machineLevel(Level),
-        assert(machine_level(Level)).
+choose_machineLevel(Level):-
+    write('Choose the difficulty of your AI oponent:\n1. Random.\n2. Best moves only.\n'),
+    read(Level),
+    valid_machineLevel(Level), !.
+
+valid_machineLevel(Level):-
+    Level > 0,
+    Level < 3 .
+
+handle_GameMode(1):-
+    retractall(machine(_)),
+    retractall(machine_level(_)).
+
+handle_GameMode(2):-
+    retractall(machine(_)),
+    retractall(machine_level(_)),
+    assert(machine(2)),
+    choose_machineLevel(Level),
+    assert(machine_level(Level)).
+
+handle_GameMode(3):-
+    retractall(machine(_)),
+    retractall(machine_level(_)),
+    assert(machine(1)),
+    choose_machineLevel(Level),
+    assert(machine_level(Level)).
+    
+handle_GameMode(4):-
+    retractall(machine(_)),
+    retractall(machine_level(_)),
+    assert(machine(1)),
+    assert(machine(2)),
+    choose_machineLevel(Level),
+    assert(machine_level(Level)).
 
 
 
 choose_GameMode(GameMode):-
     repeat,
-    write('How would you like to play?\n
-        1. Human vs Human\n
-        2. Human vs Machine\n
-        3. Machine vs Human\n
-        4. Machine vs Machine\n'),
+    write('How would you like to play?\n1. Human vs Human\n2. Human vs Machine\n3. Machine vs Human\n4. Machine vs Machine\n'),
     read(GameMode),
     valid_GameMode(GameMode), !.
 
@@ -337,9 +351,9 @@ choose_boardSize(BoardSize):-
     valid_boardSize(BoardSize), !.
 
 valid_boardSize(BoardSize):-
-    BoardSize > 3,
+    BoardSize > 2,
     BoardSize < 10 .
-*/
+
 
 :- use_module(library(plunit)).
 
