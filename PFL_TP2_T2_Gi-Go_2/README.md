@@ -135,10 +135,40 @@ nth1(2, Scores, P2Score).
 
 ### Jogada do computador
 
+Há dois niveis de dificuldade para a jogada do computador 
+
+#### Nível 1.
+Jogadada escolhida de forma aleatoria atráves de da seleçao de uma jogada da 'ListOfMoves'.
+```
+random_select(Moves, Move) :-
+    length(Moves, Lenght),
+    random(0, Lenght, Index), !,
+    nth0(Index, Moves, Move).
+```
+```
+choose_move(1, _GameState, Moves, Move):-
+random_select(Moves, Move).
+```
+
+
+
+#### Nível 2
+Para o nível 2 é usado um algoritmo guloso, grid, em que é selecionado do set, ordenado por  que obtem a maior pontuçao,
+```
+choose_move(2, GameState, Moves, Move):-
+    setof(Value-Mv, NewState^( member(Mv, Moves),
+        move(GameState, Mv, NewState), 
+        evaluate_board(NewState, Value)), [_V-Move|_]).
+```
+
 ## Conclusões
 
 Em geral foi uma boa experiência realizar este trabalho, no âmbito que o tema do trabalho era interessante, é sempre bom conhecer mais jogos de tabuleiro e este era bastante fora do normal. Como iniciação a *Prolog* foi um bom trabalho permitindo entender como funcionam bastantes aspetos diferentes como a recursividade, atribuição de valor a uma variável, ASCII art entre muitos outros.
 
 O único problema atualmente detetado, que por sua vez não é um problema de lógica de jogo, é o display visual antes da leitura de um input do jogador, isto é, aparece dois carateres extra antes de cada input do utilizador, "|:", obviamente, ainda não foi descoberta nenhuma solução.
 
-Um *Roadmap* possível seria a correção do bug visual anteriormente descrito, a ampliação do jogo para permitar jogar 3 e 4 jogadores diferentes e um sistema de base de dados que permita guardar a pontuação de cada jogador.
+Um *Roadmap* possível seria as seguintes melhorias:
+* Correção do bug visual anteriormente descrito.
+* Ampliação do jogo para permitar jogar 3 e 4 jogadores diferentes.
+* Um sistema de base de dados que permita guardar a pontuação de cada jogador.
+* A opçao um nível 3 de dificuldade, onde seria implementado um algoritmo MinMax para a obtecao de jogadas.
