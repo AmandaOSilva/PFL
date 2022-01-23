@@ -1,7 +1,7 @@
 :- use_module(library(lists)).
 :- use_module(library(between)).
 :- use_module(library(aggregate)).
-
+:- use_module(library(random)).
 
 /*
 
@@ -21,6 +21,10 @@ lenght_(A, B) :- length(B, A).
 
 isEqual(A, B) :- A = B.
    
+
+%% Code from http://www.emse.fr/~picard/cours/ai/minimax/#sec-3
+
+
 mirror_gameboard([X|[]], [RevX]) :-
     rev(X, RevX).    
 mirror_gameboard([X|Xs], Mirror) :-
@@ -278,8 +282,25 @@ game_over(GameState, Winner):-
     nth0(2, GameState, Scores),
     maximum_at(Scores, _, Winner).
 
+random_select(Moves, Move) :-
+    length(Moves, Lenght),
+    random(0, Lenght, Index), !,
+    nth0(Index, Moves, Move).
 
+choose_move(1, _GameState, Moves, Move):-
+    random_select(Moves, Move).
 
+choose_move(2, GameState, Moves, Move):-
+    setof(Value-Mv, NewState^( member(Mv, Moves),
+        move(GameState, Mv, NewState),
+        evaluate_board(NewState, Value) ), [_V-Move|_]).
+
+choose_move([GameBoard, Turn, Score], Move):-
+    machine(Turn),
+    machine_level(Level),
+    valid_moves([GameBoard, Turn, Score], Moves),
+    choose_move(Level, [GameBoard, Turn, Score], Moves, Move).
+    
 choose_move([GameBoard, Turn, _], Move):-
     repeat,
     format('Player ~d choose your move row: ', [Turn]),
