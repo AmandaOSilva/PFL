@@ -251,9 +251,7 @@ writeBoardInfoCol([_|T], Num):-
 
 /*
     Used for testing:
-    initial_state(3, S).
-    S = [[['X','X','X'],['X','X','X'],['X','X','X']],1,[0,0]]
-    move([[['X','X','X'],['X','X','X'],['X','X','X']],1,[0,0]], [1, 1], NewS).
+    
 */
 
 play_game:-
