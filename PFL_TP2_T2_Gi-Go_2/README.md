@@ -10,40 +10,64 @@ Este jogo de tabuleiro foi realizado no ambito da disciplina de prolog, somos da
 
 ## Instalação e execução
 
-Para jogar a nossa versão do *Gi-Go* apenas é necessário instalar o [SICStus Prolog 4.7](https://sicstus.sics.se)
+Para jogar a nossa versão do *Gi-Go* apenas é necessário instalar o [SICStus Prolog 4.7](https://sicstus.sics.se) e, depois de consultar o ficheiro, correr o comando ``play``.
+
 
 ## Descrição do jogo
-Os jogadores devem prencher um campo por vez no tabuleiro, até que o todos os campos estejam preenchidos.O objetivo do jogo é fechar o maior número possível de linhas horizontais, verticais ou diagonais, ou seja, colocar a última pedra. Se você fechar uma linha, obterá o número de campos na linha como pontos. Quando todos os campos estiverem ocupados, o jogador com mais pontos vence.
 
-## Lógica do jogo 2400pl
-
-## Representação interna do estado do jogo 
-
-O tabuleiro é reprentado por um matrix de "X"s, que correspondem a um campo nao preenchido. O tamanha formado apartir do input do usúario.
+Gi-go é um jogo de tabuleiro para dois jogadores. Os jogadores devem colocar peças no tabuleiro, normalmente o tabuleiro de jogo é constituido 7x7 quadrados, alternando a vez entre si, o jogo acaba quando todos os quadrados esteja preenchidos. O objetivo do jogo é fechar o maior número possível de linhas horizontais, verticais ou diagonais, ou seja, colocar a última pedra nessa mesma linha, coluna ou diagonal. Se você fechar uma linha, obterá o número de campos na linha como pontos. Quando todos os campos estiverem ocupados, o jogador com mais pontos vence.
+[Página do jogo](https://boardgamegeek.com/boardgame/348086/gi-go).
 
 
-```
-initial_state(3, S).
-    S = [[['X','X','X'],['X','X','X'],['X','X','X']],1,[0,0]]
-```
+## Lógica do jogo
+
+### Representação interna do estado do jogo 
+
+* O estado do jogo é separado em três partes:
+    1. O **tabuleiro**: é reprentado por um matrix de carateres. Inicialmente está preenchida com "X"s, que correspondem a um campo nao preenchido. O tamanho é escolhido pelo usuário.
+    2. O **turno**: indica quem deve fazer a próxima jogada.
+    3. Os **scores**: guarda a pontuação de cada jogador, na primeira posição está a pontuação do jogador 1 e na segunda a do jogador 2.
 
 
-A contagem dos pontos (score) é armazenada em uma lista, inicializada como [0,0] onde o índice (nth1) corresponde a pontucao de cada Jogador.
+Estado inicial com tamanho de campo 7:
+
+![Initial_state7](./images/initial_state7.png)
 
 
-```
-initial_state(Size, GameState) :-
-    length(GameBoard, Size),
-    maplist(lenght_(Size), GameBoard),
-    maplistlist(isEqual('X'), GameBoard),
-    Turn = 1,
-    Score = [0, 0],
-    GameState = [GameBoard, Turn, Score].
-```
+Estado inicial com tamanho de campo 3:
+
+![Initial_state3](./images/initial_state3.png)
+
+As peças de um jogador estão diferenciadas, apesar de não ser necessário. As peças colocadas pelo jogador 1 estão guardadas com um "1" e as do jogador 2 com um "2".
+
+### Visualização do estado do jogo
+
+A visualização do jogo é feita com recurso a uma função ``display_game(GameState)``. A representação visual do jogo constitui:
+* A declaração do turno, ou seja, quem vai fazer a próxima jogada.
+* Exposição da pontuação atual dos jogadores. 
+* Desenho do campo de jogo atual, com indicação das linhas e colunas, espaços vazios estão marcados com um "X" e as jogadas com "1" ou "2" dependendo de quem a realizou.
 
 
+Visualização de um jogo no estado inicial, tamanho do campo 7x7:
 
-## Visualização do estado do jogo
+![Display_initialGameState3x3](./images/Display_initialGameState7x7.png)
+
+
+Visualização de um jogo no estado inicial, tamanho do campo 3x3:
+
+![Display_initialGameState3x3](./images/Display_initialGameState3x3.png)
+
+
+Ao iniciar um novo jogo o usuário é apresentado com um menu. Neste menu é pedido que ele introduza o tamanho do tabuleiro, que escolha o modo de jogo e, caso seja necessário, escolha a dificuldade do computador.
+
+Menu inicial do jogo, modo de jogo humano contra humano:
+
+![MenuInicial_hxh](./images/MenuInicial_hxh.png)
+
+Menu inicial do jogo, modo de jogo humano contra máquina:
+
+![MenuInicial_hxm](./images/MenuInicial_hxm.png)
+
 
 
 ## Execução de jogadas

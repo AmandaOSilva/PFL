@@ -258,7 +258,7 @@ writeBoardInfoCol([_|T], Num):-
     
 */
 
-play_game:-
+play:-
     write('\nHello! Wellcome to Gi-Go.\n\n'),
     menu(BoardSize),
     initial_state(BoardSize, GameState),
