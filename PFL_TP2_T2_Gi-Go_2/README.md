@@ -69,35 +69,30 @@ Menu inicial do jogo, modo de jogo humano contra máquina:
 ![MenuInicial_hxm](./images/MenuInicial_hxm.png)
 
 
+Para validar os inputs do usuário no menu utilizamos funções auxiliares que recebem o input do utilizador e confirmam se este está nos valores permitidos, por exemplo o campo tem um tamanho mínimo de 3 e máximo de 9. Caso seja realizado um input invalido é pedido outra vez o input ao usuário.
 
-## Execução de jogadas
-É solicitado ao jogador que insira as coodenas da jogada a ser feita. [X,Y]
-Será subtituido na matrix o "1" ou "2", a depender do jogador,  o "X" indicando que esse campo foi preenchido.
-```
-do_move(GameBoard, [MoveX,MoveY], Turn, NewGameBoard) :-
-    nth0(MoveX, GameBoard, Line),
-    nth0(MoveY, Line, SqSymb),
-    SqSymb = 'X',
-    NewSymbCode is (48 + Turn),
-    char_code(NewSymb, NewSymbCode),
-    replace(MoveY, Line, NewSymb, NewLine),
-    replace(MoveX, GameBoard, NewLine, NewGameBoard).  
-```
-Um turno estará completo após ser calculado e somando o pontuacao da jogada e a variavel "Turn" for modificada para o proximo jogador.
 
-```
+### Execução de jogadas
+Para realizar uma jogada é necessário saber a linha e coluna da jogada pretendida, assim, é solicitado ao jogador que as insira, pedimos primeiro a linha e depois a coluna.
+
+A validação do input é feita através da função ``is_valid_move`` que recebe a jogada e o campo de jogo atual, caso a jogada nao seja exequível é pedido para o jogador tentar jogar outra vez.
+
+Um turno estará completo após ser calculado e somando o pontuação da jogada. A variável ``Turn`` é trocada para indicar o jogador seguinte.
+
+````prolog
 move([GameBoard, Turn, Score], Move, NewGameState) :-
     is_valid_move(GameBoard, Move),
     do_move(GameBoard, Move, Turn, NewGameBoard),
     calc_score(NewGameBoard, Move, Turn, Score, NewScore),
     NewTurn is (Turn mod 2) + 1,    
     NewGameState = [NewGameBoard, NewTurn, NewScore].
-```
-## Final do jogo
+````
 
-O jogo encontra-se encerrado quando nao houver mais campos vazios, todos foram preenchidos.
-O vencedor será aquele com a maior pontuacao.
-```
+### Final do jogo
+
+O jogo encontra-se encerrado quando nao houver mais campos vazios, ou seja, quando não houver mais jogadas validas. O vencedor será aquele com a maior pontuação.
+
+```prolog
 game_over(GameState, Winner):-
     valid_moves(GameState, ListOfMoves),
     length(ListOfMoves, 0),
@@ -107,13 +102,17 @@ game_over(GameState, Winner):-
 ``` 
 
 
-## Lista de jogadas válidas
-Uma jogada será valida se ainda nao estiver preenchida, campo diferente de "X".
+### Lista de jogadas válidas
+Uma jogada será valida se o campo escollhido ainda não estiver preenchido.
 
-Para isso percorremos a matrix do tabuleiro (GameBoard), e é verificado se o campo da jogada tem como valor "X", se a jodada é permitida e  validada.
+Para isso percorremos o tabuleiro, e é verificado se o campo da jogada tem como valor "X".
 
-```
-/* valid_move(+GameState, -ValidMove) */
+```prolog
+is_valid_move(GameBoard, [MoveX,MoveY]) :-
+    nth0(MoveX, GameBoard, Row),
+    nth0(MoveY, Row, Square),
+    Square = 'X'.
+
 valid_move([GameBoard,_,_], ValidMove) :-
     length(GameBoard, L),
     L1 is L - 1,
@@ -121,17 +120,25 @@ valid_move([GameBoard,_,_], ValidMove) :-
     between(0, L1, Y),
     is_valid_move(GameBoard, [X, Y]),
     ValidMove = [X, Y].
-```
-
-Na lista de jogadas validas ( ListOfMoves), é adicionado todos os movimentos que cumprem a condicao anteriomente explicada.
-
-```
-/* valid_moves(+GameState, -ListOfMoves) */
+    
 valid_moves(GameState, ListOfMoves) :-
     findall(ValidMove, valid_move(GameState, ValidMove), ListOfMoves).
 ```
 
 ### Avaliação do estado do jogo
-### jogada do computador
+
+A avaliação de um estado de jogo do ponto de vista de um utilizador é bastante simples, apenas é necessário pegar no index do array ``Scores`` o index do jogador, por exemplo para o jogador 2 o valor de um determinado estado de jogo é a sua pontuação, que pode ser acedida da seguinta forma:
+
+````prolog
+nth1(2, Scores, P2Score).
+````
+
+### Jogada do computador
 
 ## Conclusões
+
+Em geral foi uma boa experiência realizar este trabalho, no âmbito que o tema do trabalho era interessante, é sempre bom conhecer mais jogos de tabuleiro e este era bastante fora do normal. Como iniciação a *Prolog* foi um bom trabalho permitindo entender como funcionam bastantes aspetos diferentes como a recursividade, atribuição de valor a uma variável, ASCII art entre muitos outros.
+
+O único problema atualmente detetado, que por sua vez não é um problema de lógica de jogo, é o display visual antes da leitura de um input do jogador, isto é, aparece dois carateres extra antes de cada input do utilizador, "|:", obviamente, ainda não foi descoberta nenhuma solução.
+
+Um *Roadmap* possível seria a correção do bug visual anteriormente descrito, a ampliação do jogo para permitar jogar 3 e 4 jogadores diferentes e um sistema de base de dados que permita guardar a pontuação de cada jogador.
