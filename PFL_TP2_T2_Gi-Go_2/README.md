@@ -139,13 +139,13 @@ Há dois niveis de dificuldade para a jogada do computador
 
 #### Nível 1.
 Jogadada escolhida de forma aleatoria atráves de da seleçao de uma jogada da 'ListOfMoves'.
-```
+```prolog
 random_select(Moves, Move) :-
     length(Moves, Lenght),
     random(0, Lenght, Index), !,
     nth0(Index, Moves, Move).
 ```
-```
+```prolog
 choose_move(1, _GameState, Moves, Move):-
 random_select(Moves, Move).
 ```
@@ -154,7 +154,7 @@ random_select(Moves, Move).
 
 #### Nível 2
 Para o nível 2 é usado um algoritmo guloso, grid, em que é selecionado do set, ordenado por  que obtem a maior pontuçao,
-```
+```prolog
 choose_move(2, GameState, Moves, Move):-
     setof(Value-Mv, NewState^( member(Mv, Moves),
         move(GameState, Mv, NewState), 
